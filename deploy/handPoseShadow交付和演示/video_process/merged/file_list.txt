@@ -1,0 +1,2 @@
+file 'chicken_cutted.mp4'
+file 'wolf_cutted.mp4'

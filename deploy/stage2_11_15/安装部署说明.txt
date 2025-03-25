@@ -1,0 +1,21 @@
+
+1. 环境：Python + OpenCV
+视频源： 从默认摄像头采集检测。
+
+
+
+
+2. 安装依赖库：Python 3.10 或更高版本
+numpy
+opencv-python
+socket（Python 标准库）
+time（Python 标准库）
+datetime（Python 标准库）
+
+
+3. 在 send_score_to_ip 函数中，修改目标 IP 地址和端口，以便将分数发送到指定的服务器： 
+ip_address = "127.0.0.1"  # 目标 IP 地址
+udp_port = 9890  # UDP 端口
+
+4. 先运行 HandShadow.exe, 进入体验界面，
+5. 进入stage2_11_07目录，用python运行摄像头检测程序 ， 做出对应手影即可在unity展示对应 幻灯片。
