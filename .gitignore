@@ -8,15 +8,8 @@
 *.pyc
 *.lnk
 *.rar
+ 
 
-*.png
-*.jpg
-*.webp
-*.pdf
-*.txt
-*.md
-*.config
-*.cfg
 
 merge_udp/connect_unity/对接udp/HandShadow
 camera_test/HuaTengVision
