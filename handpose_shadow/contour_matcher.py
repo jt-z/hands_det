@@ -86,7 +86,6 @@ class ContourMatcher:
         
         return best_match
     
-    # 修改contour_matcher.py中的_compare_contours方法
     def _compare_contours(self, contour1, contour2):
         """
         比较两个轮廓的相似度
@@ -102,14 +101,21 @@ class ContourMatcher:
             # 使用OpenCV的轮廓匹配函数
             ret = cv.matchShapes(contour1, contour2, cv.CONTOURS_MATCH_I1, 0.0)
             
-            # 将距离转换为相似度得分（Hu矩距离越小，相似度越高）
-            # 调整系数使得差异更明显
-            similarity = max(0, 100 - ret * 200)  # 增大乘数以放大差异
+            # 更激进地调整相似度公式
+            # 对于相似轮廓(ret接近0)会给出较高分数，但对于不同轮廓会迅速降低分数
+            if ret < 0.01:  # 非常相似的轮廓
+                similarity = 90 + (1 - ret * 100) * 10  # 90-100范围
+            elif ret < 0.05:  # 较相似的轮廓
+                similarity = 70 + (0.05 - ret) * 400  # 70-90范围
+            elif ret < 0.1:  # 中等相似度
+                similarity = 50 + (0.1 - ret) * 400  # 50-70范围
+            elif ret < 0.2:  # 较低相似度
+                similarity = 30 + (0.2 - ret) * 200  # 30-50范围
+            else:  # 非常不同的轮廓
+                similarity = max(0, 30 - (ret - 0.2) * 100)  # 0-30范围
             
-            # 对于非常相似的轮廓（原始匹配分数接近于0），保持高分
-            # 对于不同的轮廓（原始匹配分数较大），大幅降低分数
-            if ret > 0.05:  # 设置一个阈值，超过此值认为轮廓差异较大
-                similarity = similarity * 0.7  # 降低相似度得分
+            # 确保结果在0-100范围内
+            similarity = min(100, max(0, similarity))
             
             return similarity
             
