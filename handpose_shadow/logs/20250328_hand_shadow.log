@@ -1,0 +1,216 @@
+2025-03-28 00:12:49,437 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:12:49,437 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:12:49,438 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:12:49,438 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:12:49,439 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:12:49,439 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:12:49,454 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:12:49,454 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:12:49,455 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:12:49,455 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:12:49,455 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:12:49,455 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:12:49,456 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:12:49,456 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:12:49,456 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:12:49,456 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:12:49,457 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:12:49,457 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:12:49,457 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:12:49,457 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:12:49,464 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:12:49,464 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:12:49,465 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:12:49,465 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:12:49,466 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:12:49,466 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:12:49,467 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:12:49,467 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:12:49,468 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:12:49,468 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:12:49,469 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:12:49,469 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:12:49,470 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:12:49,470 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:12:49,470 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:12:49,470 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:12:49,473 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:12:49,473 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:12:49,473 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:12:49,473 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:12:49,474 - hand_shadow.template_manager - ERROR - Template group 'nonexistent_group' not found
+2025-03-28 00:12:49,474 - hand_shadow.template_manager - ERROR - Template group 'nonexistent_group' not found
+2025-03-28 00:12:49,477 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:12:49,477 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:12:49,477 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:12:49,477 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:12:49,478 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:12:49,478 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:12:49,480 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:12:49,480 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:12:49,481 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:12:49,481 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:12:49,481 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:12:49,481 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:12:49,483 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:12:49,483 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:12:49,484 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:12:49,484 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:12:49,485 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:12:49,485 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:12:49,487 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:12:49,487 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:12:49,487 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:12:49,487 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:12:49,488 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:12:49,488 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:14:13,564 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:14:13,564 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:14:13,565 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:14:13,565 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:14:13,566 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:14:13,566 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:14:13,568 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:14:13,568 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:14:13,568 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:14:13,568 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:14:13,569 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:14:13,569 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:14:13,569 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:14:13,569 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:14:13,570 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:14:13,570 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:14:13,571 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:14:13,571 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:14:13,571 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:14:13,571 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:14:13,575 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:14:13,575 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:14:13,576 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:14:13,576 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:14:13,578 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:14:13,578 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:14:13,579 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:14:13,579 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:14:13,579 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:14:13,579 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:14:13,581 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:14:13,581 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:14:13,582 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:14:13,582 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:14:13,583 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:14:13,583 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:14:13,585 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:14:13,585 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:14:13,586 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:14:13,586 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:14:13,587 - hand_shadow.template_manager - ERROR - Template group 'nonexistent_group' not found
+2025-03-28 00:14:13,587 - hand_shadow.template_manager - ERROR - Template group 'nonexistent_group' not found
+2025-03-28 00:14:13,589 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:14:13,589 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:14:13,590 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:14:13,590 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:14:13,590 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:14:13,590 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:14:13,592 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:14:13,592 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:14:13,592 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:14:13,592 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:14:13,593 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:14:13,593 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:14:13,596 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:14:13,596 - hand_shadow.template_manager - INFO - TemplateManager initialized with templates_dir=d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates
+2025-03-28 00:14:13,596 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:14:13,596 - hand_shadow.template_manager - INFO - Available template groups: ['test_group']
+2025-03-28 00:14:13,597 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:14:13,597 - hand_shadow.template_manager - INFO - Loading template group: test_group
+2025-03-28 00:14:13,598 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:14:13,598 - hand_shadow.template_manager - ERROR - Error processing template d:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\tests\test_templates\test_group\test_template.png: tuple index out of range
+2025-03-28 00:14:13,599 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:14:13,599 - hand_shadow.template_manager - WARNING - Failed to load template: test_group\test_template.png
+2025-03-28 00:14:13,600 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:14:13,600 - hand_shadow.template_manager - INFO - Loaded 0 templates for group 'test_group'
+2025-03-28 00:14:59,234 - hand_shadow.result_sender - INFO - ResultSender initialized with default_ip=127.0.0.1, default_port=9890, max_retries=3
+2025-03-28 00:14:59,234 - hand_shadow.result_sender - INFO - ResultSender initialized with default_ip=127.0.0.1, default_port=9890, max_retries=3
+2025-03-28 00:14:59,245 - hand_shadow.result_sender - INFO - ResultSender initialized with default_ip=127.0.0.1, default_port=12345, max_retries=2
+2025-03-28 00:14:59,245 - hand_shadow.result_sender - INFO - ResultSender initialized with default_ip=127.0.0.1, default_port=12345, max_retries=2
+2025-03-28 00:14:59,358 - hand_shadow.result_sender - INFO - ResultSender initialized with default_ip=127.0.0.1, default_port=12345, max_retries=2
+2025-03-28 00:14:59,358 - hand_shadow.result_sender - INFO - ResultSender initialized with default_ip=127.0.0.1, default_port=12345, max_retries=2
+2025-03-28 00:14:59,464 - hand_shadow.result_sender - INFO - ResultSender initialized with default_ip=127.0.0.1, default_port=12345, max_retries=2
+2025-03-28 00:14:59,464 - hand_shadow.result_sender - INFO - ResultSender initialized with default_ip=127.0.0.1, default_port=12345, max_retries=2
+2025-03-28 00:14:59,569 - hand_shadow.result_sender - INFO - ResultSender initialized with default_ip=127.0.0.1, default_port=12345, max_retries=2
+2025-03-28 00:14:59,569 - hand_shadow.result_sender - INFO - ResultSender initialized with default_ip=127.0.0.1, default_port=12345, max_retries=2
+2025-03-28 00:15:13,476 - hand_shadow.contour_matcher - INFO - ContourMatcher initialized with default_threshold=60
+2025-03-28 00:15:13,476 - hand_shadow.contour_matcher - INFO - ContourMatcher initialized with default_threshold=60
+2025-03-28 00:15:13,482 - hand_shadow.contour_matcher - INFO - ContourMatcher initialized with default_threshold=60
+2025-03-28 00:15:13,482 - hand_shadow.contour_matcher - INFO - ContourMatcher initialized with default_threshold=60
+2025-03-28 00:15:13,483 - hand_shadow.contour_matcher - WARNING - Cannot match: hand_contour is None
+2025-03-28 00:15:13,483 - hand_shadow.contour_matcher - WARNING - Cannot match: hand_contour is None
+2025-03-28 00:15:13,483 - hand_shadow.contour_matcher - WARNING - Cannot match: no templates provided
+2025-03-28 00:15:13,483 - hand_shadow.contour_matcher - WARNING - Cannot match: no templates provided
+2025-03-28 00:15:13,483 - hand_shadow.contour_matcher - WARNING - Template bad_template has no contour
+2025-03-28 00:15:13,483 - hand_shadow.contour_matcher - WARNING - Template bad_template has no contour
+2025-03-28 00:15:13,484 - hand_shadow.contour_matcher - INFO - ContourMatcher initialized with default_threshold=60
+2025-03-28 00:15:13,484 - hand_shadow.contour_matcher - INFO - ContourMatcher initialized with default_threshold=60
+2025-03-28 00:15:13,485 - hand_shadow.contour_matcher - INFO - ContourMatcher initialized with default_threshold=60
+2025-03-28 00:15:13,485 - hand_shadow.contour_matcher - INFO - ContourMatcher initialized with default_threshold=60
+2025-03-28 00:15:21,330 - hand_shadow.result_sender - INFO - ResultSender initialized with default_ip=127.0.0.1, default_port=9890, max_retries=3
+2025-03-28 00:15:21,330 - hand_shadow.result_sender - INFO - ResultSender initialized with default_ip=127.0.0.1, default_port=9890, max_retries=3
+2025-03-28 00:15:21,344 - hand_shadow.command_handler - WARNING - No handlers registered for command type: ping
+2025-03-28 00:15:21,344 - hand_shadow.command_handler - WARNING - No handlers registered for command type: ping
+2025-03-28 00:15:21,345 - hand_shadow.command_handler - WARNING - Unknown command type: invalid_type
+2025-03-28 00:15:21,345 - hand_shadow.command_handler - WARNING - Unknown command type: invalid_type
+2025-03-28 00:15:21,347 - hand_shadow.command_server - INFO - CommandServer initialized with listen_ip=127.0.0.1, listen_port=12346
+2025-03-28 00:15:21,347 - hand_shadow.command_server - INFO - CommandServer initialized with listen_ip=127.0.0.1, listen_port=12346
+2025-03-28 00:15:21,348 - hand_shadow.command_server - INFO - Command server started and listening on 127.0.0.1:12346
+2025-03-28 00:15:21,348 - hand_shadow.command_server - INFO - Command server started and listening on 127.0.0.1:12346
+2025-03-28 00:15:21,349 - hand_shadow.command_server - INFO - Received command: invalid_type from ('127.0.0.1', 65074)
+2025-03-28 00:15:21,349 - hand_shadow.command_server - INFO - Received command: invalid_type from ('127.0.0.1', 65074)
+2025-03-28 00:15:21,349 - hand_shadow.command_server - WARNING - Invalid command type: invalid_type
+2025-03-28 00:15:21,349 - hand_shadow.command_server - WARNING - Invalid command type: invalid_type
+2025-03-28 00:15:21,350 - hand_shadow.command_server - INFO - Command server stopped
+2025-03-28 00:15:21,350 - hand_shadow.command_server - INFO - Command server stopped
+2025-03-28 00:15:21,351 - hand_shadow.command_server - INFO - CommandServer initialized with listen_ip=127.0.0.1, listen_port=12346
+2025-03-28 00:15:21,351 - hand_shadow.command_server - INFO - CommandServer initialized with listen_ip=127.0.0.1, listen_port=12346
+2025-03-28 00:15:21,352 - hand_shadow.command_server - INFO - Command server started and listening on 127.0.0.1:12346
+2025-03-28 00:15:21,352 - hand_shadow.command_server - INFO - Command server started and listening on 127.0.0.1:12346
+2025-03-28 00:15:21,353 - hand_shadow.command_server - WARNING - Invalid JSON data: b'not a json'
+2025-03-28 00:15:21,353 - hand_shadow.command_server - WARNING - Invalid JSON data: b'not a json'
+2025-03-28 00:15:21,353 - hand_shadow.command_server - INFO - Command server stopped
+2025-03-28 00:15:21,353 - hand_shadow.command_server - INFO - Command server stopped
+2025-03-28 00:15:21,354 - hand_shadow.command_server - INFO - CommandServer initialized with listen_ip=127.0.0.1, listen_port=12346
+2025-03-28 00:15:21,354 - hand_shadow.command_server - INFO - CommandServer initialized with listen_ip=127.0.0.1, listen_port=12346
+2025-03-28 00:15:21,356 - hand_shadow.command_server - INFO - Command server started and listening on 127.0.0.1:12346
+2025-03-28 00:15:21,356 - hand_shadow.command_server - INFO - Command server started and listening on 127.0.0.1:12346
+2025-03-28 00:15:21,357 - hand_shadow.command_server - INFO - Received command: start from ('127.0.0.1', 65078)
+2025-03-28 00:15:21,357 - hand_shadow.command_server - INFO - Received command: start from ('127.0.0.1', 65078)
+2025-03-28 00:15:21,358 - hand_shadow.command_server - INFO - Command server stopped
+2025-03-28 00:15:21,358 - hand_shadow.command_server - INFO - Command server stopped
+2025-03-28 00:15:21,359 - hand_shadow.command_server - INFO - CommandServer initialized with listen_ip=127.0.0.1, listen_port=12346
+2025-03-28 00:15:21,359 - hand_shadow.command_server - INFO - CommandServer initialized with listen_ip=127.0.0.1, listen_port=12346
+2025-03-28 00:15:21,360 - hand_shadow.command_server - INFO - Command server started and listening on 127.0.0.1:12346
+2025-03-28 00:15:21,360 - hand_shadow.command_server - INFO - Command server started and listening on 127.0.0.1:12346
+2025-03-28 00:15:21,360 - hand_shadow.command_server - INFO - Received command: ping from ('127.0.0.1', 65080)
+2025-03-28 00:15:21,360 - hand_shadow.command_server - INFO - Received command: ping from ('127.0.0.1', 65080)
+2025-03-28 00:15:21,361 - hand_shadow.command_server - INFO - Command server stopped
+2025-03-28 00:15:21,361 - hand_shadow.command_server - INFO - Command server stopped
+2025-03-28 00:15:21,362 - hand_shadow.command_server - INFO - CommandServer initialized with listen_ip=127.0.0.1, listen_port=12346
+2025-03-28 00:15:21,362 - hand_shadow.command_server - INFO - CommandServer initialized with listen_ip=127.0.0.1, listen_port=12346
+2025-03-28 00:15:21,363 - hand_shadow.command_server - INFO - Command server started and listening on 127.0.0.1:12346
+2025-03-28 00:15:21,363 - hand_shadow.command_server - INFO - Command server started and listening on 127.0.0.1:12346
+2025-03-28 00:15:21,364 - hand_shadow.command_server - WARNING - Command server is already running
+2025-03-28 00:15:21,364 - hand_shadow.command_server - WARNING - Command server is already running
+2025-03-28 00:15:22,367 - hand_shadow.command_server - INFO - Command server stopped
+2025-03-28 00:15:22,367 - hand_shadow.command_server - INFO - Command server stopped
+2025-03-28 00:15:22,367 - hand_shadow.command_server - WARNING - Command server is not running
+2025-03-28 00:15:22,367 - hand_shadow.command_server - WARNING - Command server is not running
+2025-03-28 00:15:22,368 - hand_shadow.command_server - WARNING - Command server is not running
+2025-03-28 00:15:22,368 - hand_shadow.command_server - WARNING - Command server is not running
+2025-03-28 00:15:22,369 - hand_shadow.command_server - INFO - CommandServer initialized with listen_ip=127.0.0.1, listen_port=12346
+2025-03-28 00:15:22,369 - hand_shadow.command_server - INFO - CommandServer initialized with listen_ip=127.0.0.1, listen_port=12346
+2025-03-28 00:15:22,370 - hand_shadow.command_server - INFO - Command server started and listening on 127.0.0.1:12346
+2025-03-28 00:15:22,370 - hand_shadow.command_server - INFO - Command server started and listening on 127.0.0.1:12346
+2025-03-28 00:15:22,371 - hand_shadow.command_server - INFO - Received command: start from ('127.0.0.1', 50735)
+2025-03-28 00:15:22,371 - hand_shadow.command_server - INFO - Received command: start from ('127.0.0.1', 50735)
+2025-03-28 00:15:22,372 - hand_shadow.command_server - INFO - Command server stopped
+2025-03-28 00:15:22,372 - hand_shadow.command_server - INFO - Command server stopped
