@@ -9,6 +9,7 @@
 *.lnk
 *.rar
  
+.venv
 
 
 merge_udp/connect_unity/对接udp/HandShadow
