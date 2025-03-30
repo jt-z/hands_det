@@ -131,6 +131,7 @@ class TemplateManager:
         """
         return list(self.template_groups.keys())
     
+    # 修改template_manager.py中的_load_template方法
     def _load_template(self, file_path):
         """
         加载并处理模板图像，提取轮廓
@@ -154,22 +155,24 @@ class TemplateManager:
                 self.logger.error(f"Failed to read image: {file_path}")
                 return None
             
-            # 如果图像有Alpha通道，先处理
-            if template_img.shape[2] == 4:
-                # 分离Alpha通道
-                alpha = template_img[:, :, 3]
-                template_img = template_img[:, :, :3]
-                
-                # 使用Alpha通道作为掩码
-                _, mask = cv.threshold(alpha, 127, 255, cv.THRESH_BINARY)
-                template_img = cv.bitwise_and(template_img, template_img, mask=mask)
+            self.logger.debug(f"Template image shape: {template_img.shape}")
             
-            # 转为灰度
-            if len(template_img.shape) > 2:
-                gray = cv.cvtColor(template_img, cv.COLOR_BGR2GRAY)
-            else:
-                gray = template_img
+            # 检查图像维度并处理相应的情况
+            if len(template_img.shape) == 3:  # 彩色图像
+                if template_img.shape[2] == 4:  # 带Alpha通道
+                    # 分离Alpha通道
+                    alpha = template_img[:, :, 3]
+                    template_img = template_img[:, :, :3]
+                    
+                    # 使用Alpha通道作为掩码
+                    _, mask = cv.threshold(alpha, 127, 255, cv.THRESH_BINARY)
+                    template_img = cv.bitwise_and(template_img, template_img, mask=mask)
                 
+                # 转为灰度
+                gray = cv.cvtColor(template_img, cv.COLOR_BGR2GRAY)
+            else:  # 已经是灰度图像
+                gray = template_img
+            
             # 二值化
             _, binary = cv.threshold(gray, 127, 255, cv.THRESH_BINARY)
             
@@ -192,7 +195,7 @@ class TemplateManager:
         except Exception as e:
             self.logger.error(f"Error processing template {file_path}: {e}")
             return None
-    
+        
     def generate_debug_image(self, group_name):
         """
         生成包含组内所有模板的调试图像

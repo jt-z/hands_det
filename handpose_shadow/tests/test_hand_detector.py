@@ -19,10 +19,11 @@ from handpose_shadow.hand_detector import HandDetector
 class TestHandDetector(unittest.TestCase):
     """测试手部检测器类"""
     
+    # 修改test_hand_detector.py中的setUp方法
     def setUp(self):
         """测试准备工作"""
         # 创建测试图像
-        self.skin_color = np.array([5, 150, 150])  # 在HSV空间中的皮肤颜色
+        self.skin_color = (5, 150, 150)  # 改为元组，不是np.array
         self.test_image = self._create_test_image()
         
         # 创建手部检测器
