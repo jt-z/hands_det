@@ -11,6 +11,10 @@ import threading
 import cv2 as cv
 import signal
 
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) 
+
 from handpose_shadow.config import (
     VIDEO_SOURCE, FRAME_SKIP, CONSECUTIVE_FRAMES, FRAME_WIDTH, FRAME_HEIGHT,
     UDP_SEND_IP, UDP_SEND_PORT, UDP_LISTEN_IP, UDP_LISTEN_PORT,
