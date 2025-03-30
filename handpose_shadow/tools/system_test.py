@@ -248,7 +248,7 @@ def parse_args():
     parser.add_argument('--timeout', type=int, default=60,
                       help='测试超时时间（秒），默认为60')
     parser.add_argument('--system-cmd', type=str,
-                      default=f"{sys.executable} handpose_shadow/main.py --camera=0 --show",
+                      default=f"{sys.executable} main.py --camera=0 --show",
                       help='启动系统的命令')
     
     return parser.parse_args()

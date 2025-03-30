@@ -92,7 +92,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='手影识别系统命令客户端')
     
     # 服务器设置
-    parser.add_argument('--ip', type=str, default=UDP_LISTEN_IP,
+    parser.add_argument('--ip', type=str, default='127.0.0.1',
                       help='服务器IP地址')
     parser.add_argument('--port', type=int, default=UDP_LISTEN_PORT,
                       help='服务器端口')
