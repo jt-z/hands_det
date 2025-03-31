@@ -44,40 +44,40 @@ DEFAULT_GROUP = "group1"
 
 # 手影模板组定义
 TEMPLATE_GROUPS = {
-    "group1": [
-        {"id": "dog", "file": os.path.join("group1", "dog.png"), "name": "狗", "threshold": 55},
-        {"id": "cat", "file": os.path.join("group1", "cat.png"), "name": "猫", "threshold": 58},
-        {"id": "rabbit", "file": os.path.join("group1", "rabbit.png"), "name": "兔", "threshold": 60},
-        {"id": "bird", "file": os.path.join("group1", "bird.png"), "name": "鸟", "threshold": 57},
-        {"id": "fish", "file": os.path.join("group1", "fish.png"), "name": "鱼", "threshold": 56},
+    "group1": [  # 城市场景
+        {"id": "1001", "file": os.path.join("group1", "human.png"), "name": "人", "threshold": 55},
+        {"id": "1002", "file": os.path.join("group1", "dog.png"), "name": "狗", "threshold": 58},
+        {"id": "1003", "file": os.path.join("group1", "weasel.png"), "name": "黄鼬", "threshold": 60},
+        {"id": "1004", "file": os.path.join("group1", "hedgehog.png"), "name": "刺猬", "threshold": 57},
+        {"id": "1005", "file": os.path.join("group1", "blackbird.png"), "name": "乌鸫", "threshold": 56},
     ],
-    "group2": [
-        {"id": "elephant", "file": os.path.join("group2", "elephant.png"), "name": "象", "threshold": 55},
-        {"id": "deer", "file": os.path.join("group2", "deer.png"), "name": "鹿", "threshold": 58},
-        {"id": "snake", "file": os.path.join("group2", "snake.png"), "name": "蛇", "threshold": 60},
-        {"id": "eagle", "file": os.path.join("group2", "eagle.png"), "name": "鹰", "threshold": 57},
-        {"id": "turtle", "file": os.path.join("group2", "turtle.png"), "name": "龟", "threshold": 56},
+    "group2": [  # 冻原场景
+        {"id": "1006", "file": os.path.join("group2", "arctic_wolf.png"), "name": "北极狼", "threshold": 55},
+        {"id": "1007", "file": os.path.join("group2", "reindeer.png"), "name": "驯鹿", "threshold": 58},
+        {"id": "1008", "file": os.path.join("group2", "ptarmigan.png"), "name": "岩雷鸟", "threshold": 60},
+        {"id": "1009", "file": os.path.join("group2", "musk_ox.png"), "name": "麝牛", "threshold": 57},
+        {"id": "1010", "file": os.path.join("group2", "arctic_hare.png"), "name": "北极兔", "threshold": 56},
     ],
-    "group3": [
-        {"id": "dragon", "file": os.path.join("group3", "dragon.png"), "name": "龙", "threshold": 55},
-        {"id": "tiger", "file": os.path.join("group3", "tiger.png"), "name": "虎", "threshold": 58},
-        {"id": "monkey", "file": os.path.join("group3", "monkey.png"), "name": "猴", "threshold": 60},
-        {"id": "camel", "file": os.path.join("group3", "camel.png"), "name": "骆驼", "threshold": 57},
-        {"id": "fox", "file": os.path.join("group3", "fox.png"), "name": "狐狸", "threshold": 56},
+    "group3": [  # 稀树草原场景
+        {"id": "1011", "file": os.path.join("group3", "lion.png"), "name": "狮子", "threshold": 55},
+        {"id": "1012", "file": os.path.join("group3", "gemsbok.png"), "name": "高角羚", "threshold": 58},
+        {"id": "1013", "file": os.path.join("group3", "elephant.png"), "name": "非洲草原象", "threshold": 60},
+        {"id": "1014", "file": os.path.join("group3", "buffalo.png"), "name": "非洲野水牛", "threshold": 57},
+        {"id": "1015", "file": os.path.join("group3", "giraffe.png"), "name": "南方长颈鹿", "threshold": 56},
     ],
-    "group4": [
-        {"id": "flower", "file": os.path.join("group4", "flower.png"), "name": "花", "threshold": 55},
-        {"id": "tree", "file": os.path.join("group4", "tree.png"), "name": "树", "threshold": 58},
-        {"id": "mountain", "file": os.path.join("group4", "mountain.png"), "name": "山", "threshold": 60},
-        {"id": "house", "file": os.path.join("group4", "house.png"), "name": "房子", "threshold": 57},
-        {"id": "sun", "file": os.path.join("group4", "sun.png"), "name": "太阳", "threshold": 56},
+    "group4": [  # 针叶林场景
+        {"id": "1016", "file": os.path.join("group4", "tiger.png"), "name": "东北虎", "threshold": 55},
+        {"id": "1017", "file": os.path.join("group4", "brown_bear.png"), "name": "棕熊", "threshold": 58},
+        {"id": "1018", "file": os.path.join("group4", "marten.png"), "name": "紫貂", "threshold": 60},
+        {"id": "1019", "file": os.path.join("group4", "snake.png"), "name": "棕黑锦蛇", "threshold": 57},
+        {"id": "1020", "file": os.path.join("group4", "moose.png"), "name": "驼鹿", "threshold": 56},
     ],
-    "group5": [
-        {"id": "person", "file": os.path.join("group5", "person.png"), "name": "人", "threshold": 55},
-        {"id": "face", "file": os.path.join("group5", "face.png"), "name": "脸", "threshold": 58},
-        {"id": "hand", "file": os.path.join("group5", "hand.png"), "name": "手", "threshold": 60},
-        {"id": "heart", "file": os.path.join("group5", "heart.png"), "name": "心", "threshold": 57},
-        {"id": "star", "file": os.path.join("group5", "star.png"), "name": "星星", "threshold": 56},
+    "group5": [  # 雨林场景
+        {"id": "1021", "file": os.path.join("group5", "clouded_leopard.png"), "name": "巽他云豹", "threshold": 55},
+        {"id": "1022", "file": os.path.join("group5", "pygmy_marmoset.png"), "name": "蜂猴", "threshold": 58},
+        {"id": "1023", "file": os.path.join("group5", "snake.png"), "name": "天堂金花蛇", "threshold": 60},
+        {"id": "1024", "file": os.path.join("group5", "bat.png"), "name": "短吻果蝠", "threshold": 57},
+        {"id": "1025", "file": os.path.join("group5", "locust.png"), "name": "蝗虫", "threshold": 56},
     ],
 }
 
