@@ -13,7 +13,7 @@
             "args": "${command:pickArgs}"
         },        
         {
-            "name": "Python 调试程序: 调试main.py 检测视频的情况",
+            "name": "Python 调试程序: 调试main.py 检测 wolf_and_chicken.mp4 视频的情况",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",
@@ -21,6 +21,17 @@
             "args": [
                 "--video", 
                 "D:\\Documents\\Onedrive\\Documents\\A_Dashboard\\PartTime\\HandPoseShadow\\assets\\wolf_and_chicken.mp4"
+            ]
+        },        
+        {
+            "name": "Python 调试程序: 调试main.py 检测 self_get.mov 视频的情况",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "--video", 
+                "D:\\Documents\\Onedrive\\Documents\\A_Dashboard\\PartTime\\HandPoseShadow\\assets\\self_get.mov"
             ]
         },
         {

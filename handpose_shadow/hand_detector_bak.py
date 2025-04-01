@@ -1,20 +1,18 @@
 """
 手部检测模块
-负责从视频帧中检测手部并提取轮廓，使用MediaPipe进行更精确的手部标记
+负责从视频帧中检测手部并提取轮廓
 """
 
 import cv2 as cv
 import numpy as np
-import mediapipe as mp
 from .config import SKIN_LOWER_HSV, SKIN_UPPER_HSV, MIN_CONTOUR_AREA, FRAME_WIDTH, FRAME_HEIGHT
 from .utils.logging_utils import get_logger
 from .utils import resize_image
-import math
 
 class HandDetector:
     """手部检测器类，用于检测和提取手部轮廓"""
     
-    def __init__(self, skin_lower=None, skin_upper=None, min_area=None, resize_frame=True, use_mediapipe=True):
+    def __init__(self, skin_lower=None, skin_upper=None, min_area=None, resize_frame=True):
         """
         初始化手部检测器
         
@@ -23,7 +21,6 @@ class HandDetector:
             skin_upper (list, 可选): HSV空间皮肤颜色上限，默认使用配置值
             min_area (int, 可选): 最小手部轮廓面积，默认使用配置值
             resize_frame (bool): 是否调整输入帧大小
-            use_mediapipe (bool): 是否使用MediaPipe进行手部识别，默认为True
         """
         self.logger = get_logger("hand_detector")
         
@@ -32,23 +29,9 @@ class HandDetector:
         self.skin_upper = np.array(skin_upper or SKIN_UPPER_HSV, dtype=np.uint8)
         self.min_area = min_area or MIN_CONTOUR_AREA
         self.resize_frame = resize_frame
-        self.use_mediapipe = False
-        
-        # 初始化MediaPipe Hands模块
-        if self.use_mediapipe:
-            self.mp_hands = mp.solutions.hands
-            self.mp_drawing = mp.solutions.drawing_utils
-            self.mp_drawing_styles = mp.solutions.drawing_styles
-            # 初始化MediaPipe Hands，设置最多检测一只手，检测置信度和跟踪置信度都设为0.5
-            self.hands = self.mp_hands.Hands(
-                static_image_mode=False,
-                max_num_hands=1,
-                min_detection_confidence=0.5,
-                min_tracking_confidence=0.5
-            )
         
         self.logger.info(f"HandDetector initialized with: skin_range=[{self.skin_lower}, {self.skin_upper}], "
-                        f"min_area={self.min_area}, use_mediapipe={self.use_mediapipe}")
+                        f"min_area={self.min_area}")
     
     def detect_hand(self, frame):
         """
@@ -68,23 +51,6 @@ class HandDetector:
         if self.resize_frame and (frame.shape[1] != FRAME_WIDTH or frame.shape[0] != FRAME_HEIGHT):
             frame = resize_image(frame, FRAME_WIDTH, FRAME_HEIGHT)
         
-        if self.use_mediapipe:
-            # 使用MediaPipe检测手部
-            return self._detect_with_mediapipe(frame)
-        else:
-            # 使用传统HSV肤色分割方法
-            return self._detect_with_hsv(frame)
-    
-    def _detect_with_hsv(self, frame):
-        """
-        使用HSV肤色分割检测手部
-        
-        参数:
-            frame (numpy.ndarray): 输入帧
-            
-        返回:
-            tuple: (掩码, 最大轮廓)
-        """
         # 生成皮肤掩码
         skin_mask = self._detect_skin(frame)
         
@@ -100,78 +66,6 @@ class HandDetector:
             self.logger.debug("No hand contour detected")
         
         return skin_mask, main_contour
-    
-    def _detect_with_mediapipe(self, frame):
-        """
-        使用MediaPipe检测手部
-        
-        参数:
-            frame (numpy.ndarray): 输入帧
-            
-        返回:
-            tuple: (掩码, 手掌轮廓)
-        """
-        # 创建一个空掩码
-        mask = np.zeros(frame.shape[:2], dtype=np.uint8)
-        
-        # 将BGR转换为RGB（MediaPipe使用RGB）
-        rgb_frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-        
-        # 处理图像
-        results = self.hands.process(rgb_frame)
-        
-        # 检查是否检测到手
-        if results.multi_hand_landmarks:
-            # 只取第一只手
-            hand_landmarks = results.multi_hand_landmarks[0]
-            
-            # 获取手部的关键点坐标
-            h, w = frame.shape[:2]
-            points = []
-            
-            # 获取特定的关键点，这些点定义了手掌的轮廓
-            # 我们只取手掌部分的关键点，不包括手腕
-            palm_points_indices = [0, 1, 2, 5, 9, 13, 17]  # 手腕、拇指根部、食指根部...小指根部
-            all_points = []
-            
-            for i, landmark in enumerate(hand_landmarks.landmark):
-                x_px = min(math.floor(landmark.x * w), w - 1)
-                y_px = min(math.floor(landmark.y * h), h - 1)
-                all_points.append((x_px, y_px))
-                
-                if i in palm_points_indices:
-                    points.append([x_px, y_px])
-            
-            # 将指尖的关键点也添加到轮廓中
-            fingertip_indices = [4, 8, 12, 16, 20]  # 大拇指、食指、中指、无名指、小指的指尖
-            for i in fingertip_indices:
-                points.append([all_points[i][0], all_points[i][1]])
-            
-            # 转换为numpy数组
-            points = np.array(points, dtype=np.int32)
-            
-            # 计算凸包，这样可以获得一个更平滑的手掌轮廓
-            hull = cv.convexHull(points)
-            
-            # 绘制手掌区域到掩码上
-            cv.fillConvexPoly(mask, hull, 255)
-            
-            # 应用形态学操作使轮廓更平滑
-            kernel = np.ones((5, 5), np.uint8)
-            mask = cv.morphologyEx(mask, cv.MORPH_CLOSE, kernel)
-            mask = cv.morphologyEx(mask, cv.MORPH_OPEN, kernel)
-            
-            # 提取轮廓
-            contours, _ = cv.findContours(mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-            
-            if contours:
-                # 返回最大的轮廓
-                main_contour = max(contours, key=cv.contourArea)
-                return mask, main_contour
-        
-        # 如果MediaPipe检测失败，回退到HSV方法
-        self.logger.debug("MediaPipe detection failed, falling back to HSV method")
-        return self._detect_with_hsv(frame)
     
     def _detect_skin(self, frame):
         """
@@ -234,7 +128,7 @@ class HandDetector:
         # 返回面积最大的轮廓
         return max(valid_contours, key=cv.contourArea)
     
-    def draw_detection(self, frame, mask=None, contour=None, show_mask=True, show_landmarks=True):
+    def draw_detection(self, frame, mask=None, contour=None, show_mask=True):
         """
         在帧上绘制检测结果
         
@@ -243,16 +137,16 @@ class HandDetector:
             mask (numpy.ndarray, 可选): 皮肤掩码
             contour (numpy.ndarray, 可选): 手部轮廓
             show_mask (bool): 是否显示掩码
-            show_landmarks (bool): 是否显示MediaPipe关键点
             
         返回:
             numpy.ndarray: 带有标记的帧
         """
         result = frame.copy()
         
-        if self.resize_frame and (result.shape[1] != FRAME_WIDTH or result.shape[0] != FRAME_HEIGHT):
+        if self.resize_frame:
+            print('resized.')
             result = resize_image(result, FRAME_WIDTH, FRAME_HEIGHT)
-        
+
         # 如果提供了轮廓，绘制轮廓
         if contour is not None:
             cv.drawContours(result, [contour], -1, (0, 255, 0), 2)
@@ -277,23 +171,4 @@ class HandDetector:
             # 将掩码叠加到结果上，使用0.3的透明度
             cv.addWeighted(result, 1.0, mask_overlay, 0.3, 0, result)
         
-        # 如果使用MediaPipe并且需要显示关键点
-        if self.use_mediapipe and show_landmarks:
-            rgb_frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-            results = self.hands.process(rgb_frame)
-            if results.multi_hand_landmarks:
-                for hand_landmarks in results.multi_hand_landmarks:
-                    self.mp_drawing.draw_landmarks(
-                        result,
-                        hand_landmarks,
-                        self.mp_hands.HAND_CONNECTIONS,
-                        self.mp_drawing_styles.get_default_hand_landmarks_style(),
-                        self.mp_drawing_styles.get_default_hand_connections_style()
-                    )
-        
         return result
-
-    def __del__(self):
-        """析构函数，释放MediaPipe资源"""
-        if hasattr(self, 'hands'):
-            self.hands.close()
