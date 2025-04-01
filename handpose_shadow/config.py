@@ -45,8 +45,8 @@ DEFAULT_GROUP = "group1"
 # 手影模板组定义
 TEMPLATE_GROUPS = {
     "group1": [  # 城市场景
-        {"id": "1001", "file": os.path.join("group1", "human.png"), "name": "人", "threshold": 55},
-        {"id": "1002", "file": os.path.join("group1", "dog.png"), "name": "狗", "threshold": 58},
+        {"id": "1001", "file": os.path.join("group1", "human.png"), "name": "人", "threshold": 35},
+        {"id": "1002", "file": os.path.join("group1", "dog.png"), "name": "狗", "threshold": 38},
         {"id": "1003", "file": os.path.join("group1", "weasel.png"), "name": "黄鼬", "threshold": 60},
         {"id": "1004", "file": os.path.join("group1", "hedgehog.png"), "name": "刺猬", "threshold": 57},
         {"id": "1005", "file": os.path.join("group1", "blackbird.png"), "name": "乌鸫", "threshold": 56},
