@@ -58,7 +58,15 @@ class ContourMatcher:
             
             # 计算相似度
             similarity = self._compare_contours(template_contour, hand_contour)
+            if similarity>0:
+                print(f"similarity_is:{similarity}")
             
+            self_Debug = False
+            if self_Debug:
+                from handpose_shadow.utils.debug_utils import visualize_contour
+                visualize_contour(template_contour)
+                visualize_contour(hand_contour)
+
             # 获取模板特定阈值或使用默认值
             threshold = template.get("threshold", self.default_threshold)
             
