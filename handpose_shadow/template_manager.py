@@ -133,7 +133,15 @@ class TemplateManager:
     
     # 修改template_manager.py中的_load_template方法
     def _load_template(self, file_path):
-        """加载并处理模板图像，提取轮廓"""
+        """
+        加载并处理模板图像，提取手影（黑色部分）轮廓
+        
+        参数:
+            file_path (str): 模板图像文件路径
+            
+        返回:
+            numpy.ndarray: 处理后的模板轮廓，如果加载失败则返回None
+        """
         # 检查文件是否存在
         if not os.path.exists(file_path):
             self.logger.error(f"Template file not found: {file_path}")
@@ -150,7 +158,7 @@ class TemplateManager:
             # 添加详细的调试信息
             self.logger.debug(f"Template image shape: {template_img.shape}")
             
-            # 检查图像维度并处理相应的情况
+            # 处理图像以提取黑色手影部分
             if len(template_img.shape) == 3:  # 彩色图像
                 if template_img.shape[2] == 4:  # 带Alpha通道
                     # 分离Alpha通道
@@ -166,17 +174,25 @@ class TemplateManager:
             else:  # 已经是灰度图像
                 gray = template_img
             
+            # 图像反转，使手影（黑色部分）变为白色，便于提取轮廓
+            inverted = cv.bitwise_not(gray)
+            
             # 二值化
-            _, binary = cv.threshold(gray, 127, 255, cv.THRESH_BINARY)
+            _, binary = cv.threshold(inverted, 127, 255, cv.THRESH_BINARY)
+            
+            # 可选：使用形态学操作来清理噪点
+            kernel = np.ones((3, 3), np.uint8)
+            binary = cv.morphologyEx(binary, cv.MORPH_OPEN, kernel)
+            binary = cv.morphologyEx(binary, cv.MORPH_CLOSE, kernel)
             
             # 提取轮廓
             contours, _ = cv.findContours(binary, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
             
-            # 获取最大轮廓
+            # 获取最大轮廓（应该是手影的主要轮廓）
             if not contours:
                 self.logger.warning(f"No contours found in template: {file_path}")
                 return None
-                
+            
             main_contour = max(contours, key=cv.contourArea)
             
             # 检查轮廓面积，防止除零错误
@@ -185,8 +201,8 @@ class TemplateManager:
                 self.logger.warning(f"Invalid contour area (0) in template: {file_path}")
                 return None
             
-            # 对轮廓进行光滑处理
-            epsilon = 0.001 * cv.arcLength(main_contour, True)
+            # 对轮廓进行光滑处理，减少噪点
+            epsilon = 0.002 * cv.arcLength(main_contour, True)
             approx_contour = cv.approxPolyDP(main_contour, epsilon, True)
             
             return approx_contour
@@ -194,7 +210,7 @@ class TemplateManager:
         except Exception as e:
             self.logger.error(f"Error processing template {file_path}: {e}")
             return None
-        
+
     def generate_debug_image(self, group_name):
         """
         生成包含组内所有模板的调试图像
