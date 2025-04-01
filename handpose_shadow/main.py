@@ -10,6 +10,8 @@ import argparse
 import threading
 import cv2 as cv
 import signal
+import numpy as np
+
 
 import sys
 import os
@@ -182,7 +184,15 @@ class HandShadowSystem:
     
     @measure_fps
     def process_frame(self, frame):
-        """处理单帧视频"""
+        """
+        处理单帧视频
+        
+        参数:
+            frame (numpy.ndarray): 视频帧
+            
+        返回:
+            numpy.ndarray: 处理后的帧
+        """
         if frame is None:
             return None
         
@@ -199,19 +209,79 @@ class HandShadowSystem:
             # 检测手部
             mask, hand_contour = self.hand_detector.detect_hand(frame)
             
+            # 创建信息显示区域
+            info_panel = np.ones((frame.shape[0], 250, 3), dtype=np.uint8) * 240  # 浅灰色背景
+            
+            # 显示当前组信息
+            cv.putText(
+                info_panel,
+                f"Group: {current_group}",
+                (10, 30),
+                cv.FONT_HERSHEY_SIMPLEX,
+                0.7,
+                (0, 0, 0),  # 黑色文本
+                2
+            )
+            
             # 如果成功检测到手部轮廓
+            all_match_results = []
+            best_match = None
+            
             if hand_contour is not None and current_templates:
                 # 与模板比较
                 match_result = self.contour_matcher.match_with_templates(hand_contour, current_templates)
                 
+                # 获取所有模板的匹配结果
+                if len(current_templates) > 0:
+                    # 为每个模板计算相似度
+                    for template_id, template in current_templates.items():
+                        template_contour = template.get("contour")
+                        if template_contour is not None and hand_contour is not None:
+                            similarity = self.contour_matcher._compare_contours(template_contour, hand_contour)
+                            all_match_results.append({
+                                "id": template_id,
+                                "name": template.get("name", template_id),
+                                "similarity": similarity,
+                                "threshold": template.get("threshold", self.contour_matcher.default_threshold),
+                                "matched": similarity > template.get("threshold", self.contour_matcher.default_threshold)
+                            })
+                    
+                    # 按相似度排序
+                    all_match_results.sort(key=lambda x: x["similarity"], reverse=True)
+                
                 # 处理匹配结果
                 if match_result and match_result["matched"]:
+                    best_match = match_result
                     # 检查是否与上一次匹配相同
                     if match_result["id"] == self.last_match_id:
                         self.consecutive_matches += 1
                     else:
                         self.consecutive_matches = 1
                         self.last_match_id = match_result["id"]
+                    
+                    # 在原始帧上显示最佳匹配结果
+                    cv.putText(
+                        frame,
+                        f"Detected: {match_result['name']}",
+                        (10, 30),
+                        cv.FONT_HERSHEY_SIMPLEX,
+                        0.9,
+                        (0, 255, 0),  # 绿色
+                        2
+                    )
+                    
+                    cv.putText(
+                        frame,
+                        f"Similarity: {match_result['similarity']:.1f}%",
+                        (10, 60),
+                        cv.FONT_HERSHEY_SIMPLEX,
+                        0.7,
+                        (0, 255, 0),  # 绿色
+                        2
+                    )
+                    
+                    # 绘制轮廓
+                    cv.drawContours(frame, [hand_contour], -1, (0, 255, 0), 2)
                     
                     # 连续匹配达到阈值，发送结果
                     if self.consecutive_matches >= CONSECUTIVE_FRAMES:
@@ -234,10 +304,80 @@ class HandShadowSystem:
                 else:
                     self.consecutive_matches = 0
                     self.last_match_id = None
-                
-                # 可视化结果 (这部分省略...)
+                    
+                    # 没有匹配，但仍然绘制轮廓
+                    if hand_contour is not None:
+                        cv.drawContours(frame, [hand_contour], -1, (0, 165, 255), 2)  # 橙色
+                        
+                        # 显示未匹配提示
+                        cv.putText(
+                            frame,
+                            "No Match",
+                            (10, 30),
+                            cv.FONT_HERSHEY_SIMPLEX,
+                            0.9,
+                            (0, 165, 255),  # 橙色
+                            2
+                        )
             
-            # 显示当前组信息
+            # 在信息面板上显示所有模板的匹配情况
+            cv.putText(
+                info_panel,
+                "Template Matching Results:",
+                (10, 70),
+                cv.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (0, 0, 0),  # 黑色
+                1
+            )
+            
+            # 显示每个模板的匹配情况
+            y_offset = 100
+            for i, result in enumerate(all_match_results):
+                # 确定文本颜色 - 最佳匹配为绿色，其他为黑色
+                color = (0, 128, 0) if result == best_match else (0, 0, 0)  
+                # 超过阈值的匹配显示绿色，否则显示红色
+                match_color = (0, 128, 0) if result["matched"] else (0, 0, 128)
+                
+                cv.putText(
+                    info_panel,
+                    f"{i+1}. {result['name']}:",
+                    (10, y_offset),
+                    cv.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    color,
+                    1
+                )
+                
+                cv.putText(
+                    info_panel,
+                    f"{result['similarity']:.1f}% ({result['threshold']}%)",
+                    (150, y_offset),
+                    cv.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    match_color,
+                    1
+                )
+                
+                y_offset += 25
+                
+                # 防止显示超出边界
+                if y_offset > frame.shape[0] - 30:
+                    break
+            
+            # 显示连续匹配计数
+            if self.consecutive_matches > 0:
+                cv.putText(
+                    info_panel,
+                    f"Consecutive: {self.consecutive_matches}/{CONSECUTIVE_FRAMES}",
+                    (10, frame.shape[0] - 30),
+                    cv.FONT_HERSHEY_SIMPLEX,
+                    0.6,
+                    (0, 0, 128),  # 红色
+                    1
+                )
+            
+            # 显示当前组信息在原始帧上
             cv.putText(
                 frame,
                 f"Group: {current_group}",
@@ -248,7 +388,10 @@ class HandShadowSystem:
                 1
             )
             
-            return frame
+            # 合并原始帧和信息面板
+            combined_frame = np.hstack((frame, info_panel))
+            
+            return combined_frame
             
         except ZeroDivisionError as e:
             # 专门处理除零错误，提供更具体的信息
@@ -312,6 +455,14 @@ class HandShadowSystem:
                 
                 # 显示结果
                 if self.args.show and processed_frame is not None:
+                    # 调整窗口大小以适应更宽的帧
+                    cv.namedWindow('Hand Shadow Recognition', cv.WINDOW_NORMAL)
+                    # 计算适当的窗口大小
+                    if processed_frame.shape[1] > FRAME_WIDTH:
+                        display_width = min(1280, processed_frame.shape[1])  # 限制最大宽度
+                        display_height = int(display_width * processed_frame.shape[0] / processed_frame.shape[1])
+                        cv.resizeWindow('Hand Shadow Recognition', display_width, display_height)
+                    
                     cv.imshow('Hand Shadow Recognition', processed_frame)
                     if cv.waitKey(1) & 0xFF == ord('q'):
                         break

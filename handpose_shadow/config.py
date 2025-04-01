@@ -19,7 +19,7 @@ SHOW_PREVIEW = True  # 是否显示预览窗口
 
 # 识别参数
 SIMILARITY_THRESHOLD = 55  # 默认相似度阈值
-CONSECUTIVE_FRAMES = 3  # 连续多少帧匹配才认为成功
+CONSECUTIVE_FRAMES = 2  # 连续多少帧匹配才认为成功
 MIN_CONTOUR_AREA = 5000  # 最小手部轮廓面积（过滤小噪点）
 
 # 皮肤检测参数
@@ -45,11 +45,11 @@ DEFAULT_GROUP = "group1"
 # 手影模板组定义
 TEMPLATE_GROUPS = {
     "group1": [  # 城市场景
-        {"id": "1001", "file": os.path.join("group1", "human.png"), "name": "人", "threshold": 35},
-        {"id": "1002", "file": os.path.join("group1", "dog.png"), "name": "狗", "threshold": 38},
-        {"id": "1003", "file": os.path.join("group1", "weasel.png"), "name": "黄鼬", "threshold": 60},
-        {"id": "1004", "file": os.path.join("group1", "hedgehog.png"), "name": "刺猬", "threshold": 57},
-        {"id": "1005", "file": os.path.join("group1", "blackbird.png"), "name": "乌鸫", "threshold": 56},
+        {"id": "1001", "file": os.path.join("group1", "human.png"), "name": "Ren_Human_人", "threshold": 55}, # 人
+        {"id": "1002", "file": os.path.join("group1", "dog.png"), "name": "Gou_Dog_狗", "threshold": 55}, # 狗
+        {"id": "1003", "file": os.path.join("group1", "weasel.png"), "name": "HuangYou_weasel_黄鼬", "threshold": 60}, #黄鼬
+        {"id": "1004", "file": os.path.join("group1", "hedgehog.png"), "name": "CiWei_hedgehog_刺猬", "threshold": 57}, #刺猬
+        {"id": "1005", "file": os.path.join("group1", "blackbird.png"), "name": "WuDong_blackbird_乌鸫", "threshold": 56}, #乌鸫
     ],
     "group2": [  # 冻原场景
         {"id": "1006", "file": os.path.join("group2", "arctic_wolf.png"), "name": "北极狼", "threshold": 55},
