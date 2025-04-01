@@ -143,6 +143,10 @@ class HandDetector:
         """
         result = frame.copy()
         
+        if self.resize_frame:
+            print('resized.')
+            result = resize_image(result, FRAME_WIDTH, FRAME_HEIGHT)
+
         # 如果提供了轮廓，绘制轮廓
         if contour is not None:
             cv.drawContours(result, [contour], -1, (0, 255, 0), 2)
