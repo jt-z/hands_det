@@ -133,15 +133,7 @@ class TemplateManager:
     
     # 修改template_manager.py中的_load_template方法
     def _load_template(self, file_path):
-        """
-        加载并处理模板图像，提取轮廓
-        
-        参数:
-            file_path (str): 模板图像文件路径
-            
-        返回:
-            numpy.ndarray: 处理后的模板轮廓，如果加载失败则返回None
-        """
+        """加载并处理模板图像，提取轮廓"""
         # 检查文件是否存在
         if not os.path.exists(file_path):
             self.logger.error(f"Template file not found: {file_path}")
@@ -155,6 +147,7 @@ class TemplateManager:
                 self.logger.error(f"Failed to read image: {file_path}")
                 return None
             
+            # 添加详细的调试信息
             self.logger.debug(f"Template image shape: {template_img.shape}")
             
             # 检查图像维度并处理相应的情况
@@ -186,7 +179,13 @@ class TemplateManager:
                 
             main_contour = max(contours, key=cv.contourArea)
             
-            # 对轮廓进行光滑处理，减少噪点
+            # 检查轮廓面积，防止除零错误
+            area = cv.contourArea(main_contour)
+            if area <= 0:
+                self.logger.warning(f"Invalid contour area (0) in template: {file_path}")
+                return None
+            
+            # 对轮廓进行光滑处理
             epsilon = 0.001 * cv.arcLength(main_contour, True)
             approx_contour = cv.approxPolyDP(main_contour, epsilon, True)
             

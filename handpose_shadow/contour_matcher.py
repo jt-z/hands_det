@@ -87,32 +87,45 @@ class ContourMatcher:
         return best_match
     
     def _compare_contours(self, contour1, contour2):
-        """
-        比较两个轮廓的相似度
-        
-        参数:
-            contour1 (numpy.ndarray): 第一个轮廓
-            contour2 (numpy.ndarray): 第二个轮廓
-            
-        返回:
-            float: 相似度得分 (0-100)，越高表示越相似
-        """
+        """比较两个轮廓的相似度"""
         try:
+            # 首先检查输入轮廓是否有效
+            if contour1 is None or contour2 is None:
+                self.logger.warning("Cannot compare: one of the contours is None")
+                return 0
+                
+            # 检查轮廓点数
+            if len(contour1) < 3 or len(contour2) < 3:
+                self.logger.warning("Cannot compare: contour has less than 3 points")
+                return 0
+                
+            # 检查轮廓面积
+            area1 = cv.contourArea(contour1)
+            area2 = cv.contourArea(contour2)
+            if area1 <= 0 or area2 <= 0:
+                self.logger.warning(f"Invalid contour area: {area1}, {area2}")
+                return 0
+            
             # 使用OpenCV的轮廓匹配函数
             ret = cv.matchShapes(contour1, contour2, cv.CONTOURS_MATCH_I1, 0.0)
             
-            # 更激进地调整相似度公式
-            # 对于相似轮廓(ret接近0)会给出较高分数，但对于不同轮廓会迅速降低分数
-            if ret < 0.01:  # 非常相似的轮廓
-                similarity = 90 + (1 - ret * 100) * 10  # 90-100范围
-            elif ret < 0.05:  # 较相似的轮廓
-                similarity = 70 + (0.05 - ret) * 400  # 70-90范围
-            elif ret < 0.1:  # 中等相似度
-                similarity = 50 + (0.1 - ret) * 400  # 50-70范围
-            elif ret < 0.2:  # 较低相似度
-                similarity = 30 + (0.2 - ret) * 200  # 30-50范围
-            else:  # 非常不同的轮廓
-                similarity = max(0, 30 - (ret - 0.2) * 100)  # 0-30范围
+            # 安全地计算相似度分数
+            similarity = 0
+            try:
+                # 更激进地调整相似度公式
+                if ret < 0.01:  # 非常相似的轮廓
+                    similarity = 90 + (1 - ret * 100) * 10  # 90-100范围
+                elif ret < 0.05:  # 较相似的轮廓
+                    similarity = 70 + (0.05 - ret) * 400  # 70-90范围
+                elif ret < 0.1:  # 中等相似度
+                    similarity = 50 + (0.1 - ret) * 400  # 50-70范围
+                elif ret < 0.2:  # 较低相似度
+                    similarity = 30 + (0.2 - ret) * 200  # 30-50范围
+                else:  # 非常不同的轮廓
+                    similarity = max(0, 30 - (ret - 0.2) * 100)  # 0-30范围
+            except:
+                # 如果计算出错，返回默认的低相似度
+                similarity = 0
             
             # 确保结果在0-100范围内
             similarity = min(100, max(0, similarity))
@@ -122,7 +135,7 @@ class ContourMatcher:
         except Exception as e:
             self.logger.error(f"Error comparing contours: {e}")
             return 0
-    
+        
     def visualize_match(self, frame, hand_contour, template_contour, match_result):
         """
         可视化显示匹配结果
