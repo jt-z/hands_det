@@ -10,7 +10,9 @@
 *.rar
  
 .venv
-
+*.egg-info
+handpose_shadow.egg-info/*
+handpose_shadow/handpose_shadow.egg-info
 
 merge_udp/connect_unity/对接udp/HandShadow
 camera_test/HuaTengVision
