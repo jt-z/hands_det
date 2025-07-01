@@ -41,7 +41,7 @@ LOG_TO_FILE = True  # 是否记录日志到文件
 LOG_FILENAME = "hand_shadow.log"  # 日志文件名
 
 # 默认活动组
-DEFAULT_GROUP = "group2"
+DEFAULT_GROUP = "group4"
 
 # 手影模板组定义
 TEMPLATE_GROUPS = {
