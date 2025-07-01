@@ -1,5 +1,5 @@
 """
-手影识别系统主程序
+手影识别系统主程序 - 支持双视频流
 整合各个模块，实现完整功能
 """
 
@@ -11,7 +11,6 @@ import threading
 import cv2 as cv
 import signal
 import numpy as np
-
 
 import sys
 import os
@@ -45,8 +44,6 @@ class HandShadowSystem:
         self.running = False
         self.current_group = self.args.group
         self.processing_lock = threading.Lock()
-        self.consecutive_matches = 0
-        self.last_match_id = None
         
         # 初始化组件
         self.init_components()
@@ -151,10 +148,6 @@ class HandShadowSystem:
                 self.current_group = group_id
                 self.logger.info(f"Switched to template group: {group_id}, "
                                 f"loaded {len(self.templates)} templates")
-                
-                # 重置匹配状态
-                self.consecutive_matches = 0
-                self.last_match_id = None
             except Exception as e:
                 self.logger.error(f"Error switching template group: {e}")
     
@@ -182,16 +175,80 @@ class HandShadowSystem:
             self.processing_thread = None
         self.logger.info("Video processing stopped")
     
-    @measure_fps
-    def process_frame(self, frame):
+    def detect_and_init_video_sources(self):
+        """检测并初始化视频源"""
+        video_sources = []
+        
+        # 方案1: 如果指定了视频文件，只使用视频文件
+        if self.args.video:
+            cap = cv.VideoCapture(self.args.video)
+            if cap.isOpened():
+                video_sources.append(cap)
+                self.logger.info(f"Using video file: {self.args.video}")
+            else:
+                self.logger.error(f"Failed to open video file: {self.args.video}")
+            return video_sources
+        
+        # 方案2: 检测可用的摄像头
+        self.logger.info("Detecting available cameras...")
+        
+        # 检测摄像头0
+        cap0 = cv.VideoCapture(0)
+        if cap0.isOpened():
+            # 简单测试是否真的能读取帧
+            ret, _ = cap0.read()
+            if ret:
+                video_sources.append(cap0)
+                self.logger.info("Camera 0 detected and added")
+            else:
+                self.logger.warning("Camera 0 detected but cannot read frames")
+                cap0.release()
+        else:
+            self.logger.warning("Camera 0 not available")
+            cap0.release()
+        
+        # 检测摄像头1
+        cap1 = cv.VideoCapture(1)
+        if cap1.isOpened():
+            # 简单测试是否真的能读取帧
+            ret, _ = cap1.read()
+            if ret:
+                video_sources.append(cap1)
+                self.logger.info("Camera 1 detected and added")
+            else:
+                self.logger.warning("Camera 1 detected but cannot read frames")
+                cap1.release()
+        else:
+            self.logger.info("Camera 1 not available")
+            cap1.release()
+        
+        # 如果没有找到任何摄像头，尝试使用默认的camera参数
+        if not video_sources:
+            self.logger.warning("No cameras auto-detected, trying default camera...")
+            cap_default = cv.VideoCapture(self.args.camera)
+            if cap_default.isOpened():
+                ret, _ = cap_default.read()
+                if ret:
+                    video_sources.append(cap_default)
+                    self.logger.info(f"Using default camera: {self.args.camera}")
+                else:
+                    cap_default.release()
+            else:
+                cap_default.release()
+        
+        return video_sources
+    
+    def process_single_stream_frame(self, frame, stream_id, state):
         """
-        处理单帧视频
+        处理单个视频流的帧
         
         参数:
-            frame (numpy.ndarray): 视频帧
+            frame: 输入帧
+            stream_id: 流标识
+            state: 流状态字典
             
         返回:
-            numpy.ndarray: 处理后的帧
+            处理后的帧
         """
         if frame is None:
             return None
@@ -212,13 +269,23 @@ class HandShadowSystem:
             # 创建信息显示区域
             info_panel = np.ones((frame.shape[0], 250, 3), dtype=np.uint8) * 240  # 浅灰色背景
             
-            # 显示当前组信息
+            # 显示流和组信息
+            cv.putText(
+                info_panel,
+                f"Stream: {stream_id}",
+                (10, 30),
+                cv.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (0, 0, 128),  # 深红色
+                2
+            )
+            
             cv.putText(
                 info_panel,
                 f"Group: {current_group}",
-                (10, 30),
+                (10, 55),
                 cv.FONT_HERSHEY_SIMPLEX,
-                0.7,
+                0.6,
                 (0, 0, 0),  # 黑色文本
                 2
             )
@@ -253,11 +320,11 @@ class HandShadowSystem:
                 if match_result and match_result["matched"]:
                     best_match = match_result
                     # 检查是否与上一次匹配相同
-                    if match_result["id"] == self.last_match_id:
-                        self.consecutive_matches += 1
+                    if match_result["id"] == state['last_match_id']:
+                        state['consecutive_matches'] += 1
                     else:
-                        self.consecutive_matches = 1
-                        self.last_match_id = match_result["id"]
+                        state['consecutive_matches'] = 1
+                        state['last_match_id'] = match_result["id"]
                     
                     # 在原始帧上显示最佳匹配结果
                     cv.putText(
@@ -265,7 +332,7 @@ class HandShadowSystem:
                         f"Detected: {match_result['name']}",
                         (10, 30),
                         cv.FONT_HERSHEY_SIMPLEX,
-                        0.9,
+                        0.8,
                         (0, 255, 0),  # 绿色
                         2
                     )
@@ -275,7 +342,7 @@ class HandShadowSystem:
                         f"Similarity: {match_result['similarity']:.1f}%",
                         (10, 60),
                         cv.FONT_HERSHEY_SIMPLEX,
-                        0.7,
+                        0.6,
                         (0, 255, 0),  # 绿色
                         2
                     )
@@ -284,26 +351,27 @@ class HandShadowSystem:
                     cv.drawContours(frame, [hand_contour], -1, (0, 255, 0), 2)
                     
                     # 连续匹配达到阈值，发送结果
-                    if self.consecutive_matches >= CONSECUTIVE_FRAMES:
+                    if state['consecutive_matches'] >= CONSECUTIVE_FRAMES:
                         result_data = {
                             "id": match_result["id"],
                             "name": match_result["name"],
                             "similarity": match_result["similarity"],
-                            "group": current_group
+                            "group": current_group,
+                            "stream_id": stream_id  # 标识来源视频流
                         }
                         
                         # 发送识别结果
                         send_result(result_data, self.args.send_ip, self.args.send_port)
                         
                         # 日志记录
-                        self.logger.info(f"Match found: {match_result['name']} "
+                        self.logger.info(f"[{stream_id}] Match found: {match_result['name']} "
                                         f"(similarity: {match_result['similarity']:.1f})")
                         
                         # 重置计数器，避免重复发送
-                        self.consecutive_matches = 0
+                        state['consecutive_matches'] = 0
                 else:
-                    self.consecutive_matches = 0
-                    self.last_match_id = None
+                    state['consecutive_matches'] = 0
+                    state['last_match_id'] = None
                     
                     # 没有匹配，但仍然绘制轮廓
                     if hand_contour is not None:
@@ -315,7 +383,7 @@ class HandShadowSystem:
                             "No Match",
                             (10, 30),
                             cv.FONT_HERSHEY_SIMPLEX,
-                            0.9,
+                            0.8,
                             (0, 165, 255),  # 橙色
                             2
                         )
@@ -323,64 +391,66 @@ class HandShadowSystem:
             # 在信息面板上显示所有模板的匹配情况
             cv.putText(
                 info_panel,
-                "Template Matching Results:",
-                (10, 70),
+                "Template Results:",
+                (10, 90),
                 cv.FONT_HERSHEY_SIMPLEX,
-                0.6,
+                0.5,
                 (0, 0, 0),  # 黑色
                 1
             )
             
             # 显示每个模板的匹配情况
-            y_offset = 100
+            y_offset = 115
             for i, result in enumerate(all_match_results):
                 # 确定文本颜色 - 最佳匹配为绿色，其他为黑色
                 color = (0, 128, 0) if result == best_match else (0, 0, 0)  
                 # 超过阈值的匹配显示绿色，否则显示红色
                 match_color = (0, 128, 0) if result["matched"] else (0, 0, 128)
                 
+                # 模板名称（缩短显示）
+                name = result['name'][:8] + ".." if len(result['name']) > 10 else result['name']
                 cv.putText(
                     info_panel,
-                    f"{i+1}. {result['name']}:",
+                    f"{i+1}.{name}:",
                     (10, y_offset),
                     cv.FONT_HERSHEY_SIMPLEX,
-                    0.5,
+                    0.4,
                     color,
                     1
                 )
                 
                 cv.putText(
                     info_panel,
-                    f"{result['similarity']:.1f}% ({result['threshold']}%)",
-                    (150, y_offset),
+                    f"{result['similarity']:.1f}%",
+                    (140, y_offset),
                     cv.FONT_HERSHEY_SIMPLEX,
-                    0.5,
+                    0.4,
                     match_color,
                     1
                 )
                 
-                y_offset += 25
+                y_offset += 20
                 
                 # 防止显示超出边界
-                if y_offset > frame.shape[0] - 30:
+                if y_offset > frame.shape[0] - 50:
                     break
             
             # 显示连续匹配计数
-            if self.consecutive_matches > 0:
+            if state['consecutive_matches'] > 0:
                 cv.putText(
                     info_panel,
-                    f"Consecutive: {self.consecutive_matches}/{CONSECUTIVE_FRAMES}",
+                    f"Consecutive: {state['consecutive_matches']}/{CONSECUTIVE_FRAMES}",
                     (10, frame.shape[0] - 30),
                     cv.FONT_HERSHEY_SIMPLEX,
-                    0.6,
+                    0.5,
                     (0, 0, 128),  # 红色
                     1
                 )
             
-            # 显示当前组信息在原始帧上
+            # 显示流标识在原始帧上
             cv.putText(
                 frame,
-                f"Group: {current_group}",
+                f"Stream: {stream_id}",
                 (10, frame.shape[0] - 10),
                 cv.FONT_HERSHEY_SIMPLEX,
                 0.5,
@@ -393,13 +463,12 @@ class HandShadowSystem:
             
             return combined_frame
             
-        except ZeroDivisionError as e:
-            # 专门处理除零错误，提供更具体的信息
-            self.logger.error(f"Division by zero error in processing frame: {e}")
+        except Exception as e:
+            self.logger.error(f"Error processing frame in {stream_id}: {e}")
             # 返回带有错误信息的原始帧
             cv.putText(
                 frame,
-                "Error: Division by zero detected",
+                f"Error in {stream_id}",
                 (50, 50),
                 cv.FONT_HERSHEY_SIMPLEX,
                 0.7,
@@ -407,72 +476,135 @@ class HandShadowSystem:
                 2
             )
             return frame
-        except Exception as e:
-            self.logger.error(f"Error processing frame: {e}")
-            return frame
+    
+    def display_frames(self, processed_frames):
+        """显示处理后的帧"""
+        if len(processed_frames) == 1:
+            # 单视频流 - 直接显示
+            stream_id, frame = processed_frames[0]
+            cv.imshow('Hand Shadow Recognition', frame)
+            
+        elif len(processed_frames) == 2:
+            # 双视频流 - 垂直拼接显示
+            stream1_id, frame1 = processed_frames[0]
+            stream2_id, frame2 = processed_frames[1]
+            
+            # 确保两个帧宽度相同
+            h1, w1 = frame1.shape[:2]
+            h2, w2 = frame2.shape[:2]
+            
+            if w1 != w2:
+                # 调整到相同宽度
+                target_width = min(w1, w2)
+                if w1 != target_width:
+                    frame1 = cv.resize(frame1, (target_width, int(h1 * target_width / w1)))
+                if w2 != target_width:
+                    frame2 = cv.resize(frame2, (target_width, int(h2 * target_width / w2)))
+            
+            # 垂直拼接
+            combined_frame = np.vstack((frame1, frame2))
+            
+            # 在拼接线处添加分隔线
+            h, w = combined_frame.shape[:2]
+            cv.line(combined_frame, (0, h//2), (w, h//2), (255, 255, 255), 3)
+            
+            # 显示
+            cv.namedWindow('Hand Shadow Recognition - Dual Stream', cv.WINDOW_NORMAL)
+            # 设置窗口大小
+            display_width = min(1200, w)
+            display_height = int(display_width * h / w)
+            cv.resizeWindow('Hand Shadow Recognition - Dual Stream', display_width, display_height)
+            cv.imshow('Hand Shadow Recognition - Dual Stream', combined_frame)
+        
+        else:
+            # 多于2个流 - 分别显示
+            for stream_id, frame in processed_frames:
+                window_name = f'Hand Shadow - {stream_id}'
+                cv.imshow(window_name, frame)
     
     def process_video_loop(self):
-        """视频处理主循环"""
-        # 确定视频源
-        video_source = self.args.video if self.args.video else self.args.camera
-        self.logger.info(f"Opening video source: {video_source}")
+        """视频处理主循环 - 支持单/双视频流"""
         
-        # 打开视频源
-        cap = cv.VideoCapture(video_source)
-        if not cap.isOpened():
-            self.logger.error(f"Failed to open video source: {video_source}")
+        # 检测并初始化视频源
+        video_sources = self.detect_and_init_video_sources()
+        if not video_sources:
+            self.logger.error("No valid video sources found")
             return
+            
+        self.logger.info(f"Processing {len(video_sources)} video stream(s)")
         
-        # 获取视频信息
-        frame_width = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
-        frame_height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
-        fps = int(cap.get(cv.CAP_PROP_FPS))
-        total_frames = int(cap.get(cv.CAP_PROP_FRAME_COUNT)) if self.args.video else 0
-        
-        self.logger.info(f"Video info: {frame_width}x{frame_height} @ {fps}fps")
-        if total_frames > 0:
-            self.logger.info(f"Total frames: {total_frames}")
-        
-        # 帧计数
-        frame_count = 0
+        # 为每个视频流初始化状态
+        stream_states = {}
+        for i, cap in enumerate(video_sources):
+            stream_id = f"stream_{i}"
+            stream_states[stream_id] = {
+                'cap': cap,
+                'frame_count': 0,
+                'consecutive_matches': 0,
+                'last_match_id': None
+            }
+            
+            # 获取视频信息
+            width = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
+            height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
+            fps = int(cap.get(cv.CAP_PROP_FPS))
+            total_frames = int(cap.get(cv.CAP_PROP_FRAME_COUNT)) if hasattr(cap, 'get') else 0
+            self.logger.info(f"{stream_id}: {width}x{height} @ {fps}fps")
+            if total_frames > 0:
+                self.logger.info(f"{stream_id}: Total frames: {total_frames}")
         
         try:
-            # 主循环
-            while self.running and cap.isOpened():
-                ret, frame = cap.read()
-                frame_count += 1
+            # 主循环 - 单线程轮询处理
+            while self.running:
+                all_streams_ended = True
+                processed_frames = []
                 
-                if not ret:
-                    self.logger.info("End of video reached")
+                # 依次处理每个视频流
+                for stream_id, state in stream_states.items():
+                    cap = state['cap']
+                    
+                    if not cap.isOpened():
+                        continue
+                        
+                    # 读取一帧
+                    ret, frame = cap.read()
+                    if not ret:
+                        self.logger.info(f"{stream_id}: End of video reached")
+                        continue
+                        
+                    all_streams_ended = False
+                    state['frame_count'] += 1
+                    
+                    # 帧率控制
+                    if state['frame_count'] % self.args.skip != 0:
+                        continue
+                    
+                    # 处理帧
+                    processed_frame = self.process_single_stream_frame(
+                        frame, stream_id, state
+                    )
+                    
+                    if processed_frame is not None:
+                        processed_frames.append((stream_id, processed_frame))
+                
+                # 如果所有流都结束了，退出循环
+                if all_streams_ended:
+                    self.logger.info("All video streams ended")
                     break
                 
-                # 帧率控制
-                if frame_count % self.args.skip != 0:
-                    continue
-                
-                # 处理帧
-                processed_frame = self.process_frame(frame)
-                
-                # 显示结果
-                if self.args.show and processed_frame is not None:
-                    # 调整窗口大小以适应更宽的帧
-                    cv.namedWindow('Hand Shadow Recognition', cv.WINDOW_NORMAL)
-                    # 计算适当的窗口大小
-                    if processed_frame.shape[1] > FRAME_WIDTH:
-                        display_width = min(1280, processed_frame.shape[1])  # 限制最大宽度
-                        display_height = int(display_width * processed_frame.shape[0] / processed_frame.shape[1])
-                        cv.resizeWindow('Hand Shadow Recognition', display_width, display_height)
-                    
-                    cv.imshow('Hand Shadow Recognition', processed_frame)
+                # 显示处理结果
+                if self.args.show and processed_frames:
+                    self.display_frames(processed_frames)
                     if cv.waitKey(1) & 0xFF == ord('q'):
                         break
-            
+                        
         except Exception as e:
             self.logger.error(f"Error in video processing loop: {e}")
             
         finally:
             # 释放资源
-            cap.release()
+            for state in stream_states.values():
+                state['cap'].release()
             if self.args.show:
                 cv.destroyAllWindows()
             
