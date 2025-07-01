@@ -63,7 +63,13 @@ class ResultSender:
             "group": result.get("group", "unknown"),
             "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
         }
-        
+
+        # 强制设置发送的消息内容为 0#id格式 , 默认为摄像头1
+        message_content_str = f"0#{message_data['id']}"
+        message_data['content'] = message_content_str
+        print('Force send with 0#1001 format, message_content_str:', message_content_str)
+
+
         self.logger.debug(f"Sending result: {message_data}")
         
         return self._send_udp_message(message_data, ip, port, self.max_retries, self.retry_delay)
@@ -121,6 +127,13 @@ class ResultSender:
             message_json = json.dumps(message_data)
             message_bytes = message_json.encode('utf-8')
             
+            # 强制改为只发送contens中的数据
+            if 'content' in message_data:
+                message_bytes = message_data['content'].encode('utf-8')
+            else:
+                # 处理缺少 content 的情况
+                message_bytes = b'0#1001'  # 或者抛出异常
+
             # 指定目标地址
             server_address = (ip, port)
             
