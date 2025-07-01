@@ -132,7 +132,7 @@ class ResultSender:
                 message_bytes = message_data['content'].encode('utf-8')
             else:
                 # 处理缺少 content 的情况
-                message_bytes = b'0#1001'  # 或者抛出异常
+                message_bytes = "0#1001".encode('utf-8')  # 或者抛出异常
 
             # 指定目标地址
             server_address = (ip, port)
