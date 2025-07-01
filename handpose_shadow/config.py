@@ -7,8 +7,8 @@ import os
 
 # 路径设置
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TEMPLATES_DIR = os.path.join(BASE_DIR, "groups1to5")
-TEMPLATES_DIR = os.path.join(TEMPLATES_DIR, "templates")
+# TEMPLATES_DIR = os.path.join(BASE_DIR, "groups1to5")
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 LOGS_DIR = os.path.join(BASE_DIR, "logs")
 
 # 视频设置
@@ -41,7 +41,7 @@ LOG_TO_FILE = True  # 是否记录日志到文件
 LOG_FILENAME = "hand_shadow.log"  # 日志文件名
 
 # 默认活动组
-DEFAULT_GROUP = "group4"
+DEFAULT_GROUP = "group1"
 
 # 手影模板组定义
 TEMPLATE_GROUPS = {
