@@ -325,7 +325,10 @@ class TemplateGenerator:
 def main():
     """主函数"""
     # 设置路径
-    input_base_dir = "D:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\groups1to5\original_pics"
+
+    # 修改路径，改成更新后的代码路径。
+    # input_base_dir = "D:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\groups1to5\original_pics"
+    input_base_dir = "D:\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\groups1to5\original_pics"
     output_base_dir = ".\outputv2"
     
     # 创建生成器
