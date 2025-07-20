@@ -2,3 +2,4 @@ opencv-python>=4.5.0
 numpy>=1.20.0
 mediapipe
 pyinstaller # 用于打包的代码库
+# 在项目根目录，运行这个代码即可：  pyinstaller --onefile --windowed --add-data "handpose_shadow\templates;handpose_shadow\templates" handpose_shadow\main.py
