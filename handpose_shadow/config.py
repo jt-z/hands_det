@@ -43,6 +43,11 @@ LOG_FILENAME = "hand_shadow.log"  # 日志文件名
 # 默认活动组
 DEFAULT_GROUP = "group4"
 
+# 增加修改左右流的 识别的模板id
+DEFAULT_ANIMAL_ID_LEFT = "1001"
+DEFAULT_ANIMAL_ID_RIGHT = "1001"
+
+
 # 手影模板组定义
 TEMPLATE_GROUPS = {
     "group1": [  # 城市场景
@@ -87,8 +92,23 @@ COMMAND_TYPES = {
     "START": "start",
     "STOP": "stop",
     "SWITCH_SCENE": "switch_scene",
-    "PING": "ping"
+    "PING": "ping",
+    "LEFT":"left",
+    "RIGHT":"right"
 }
+
+# 前端发过来的命令
+# {"type":"stop","scene_id":""}
+# {"type":"start","scene_id":""}
+# {"type":"switch_scene","scene_id":"group1"}
+# {"type":"left","scene_id":"1012"}
+# {"type":"right","scene_id":"1012"}
+
+# 命令类型感觉要修改，要 增加 控制 left right的命令，  还有就是要传递左右流 的手影的id 
+# 应该是  start ， 启动默认双流的识别，默认不发送左右流的识别结果，直到接收到对应的 左右流 命令。 
+#         left left_id   开始持续更新左流的识别结果,发送左流匹配程度 
+#         right right_id    开始持续更新右流的识别结果,发送右流匹配程度 
+# 应该是  stop    左右都停止， 
 
 # 状态码
 STATUS_CODES = {
