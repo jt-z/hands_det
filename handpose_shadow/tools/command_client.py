@@ -99,14 +99,18 @@ def parse_args():
     
     # 命令选择
     command_group = parser.add_mutually_exclusive_group(required=True)
-    command_group.add_argument('--start', action='store_true',
-                             help='发送开始命令')
-    command_group.add_argument('--stop', action='store_true',
-                             help='发送停止命令')
+    command_group.add_argument('--start', type=str, nargs='?', const='',
+                             help='发送开始命令，可选择指定场景ID')
+    command_group.add_argument('--stop', type=str, nargs='?', const='',
+                             help='发送停止命令，可选择指定场景ID')
     command_group.add_argument('--switch', type=str,
-                             help='发送切换场景命令')
+                             help='发送切换场景命令，需要指定场景ID')
     command_group.add_argument('--ping', action='store_true',
                              help='发送心跳检测命令')
+    command_group.add_argument('--left', type=str,
+                             help='发送左侧命令，需要指定场景ID')
+    command_group.add_argument('--right', type=str,
+                             help='发送右侧命令，需要指定场景ID')
     command_group.add_argument('--interactive', action='store_true',
                              help='进入交互模式')
     
@@ -119,6 +123,8 @@ def show_interactive_menu():
     print("2. 停止识别")
     print("3. 切换场景")
     print("4. 发送心跳检测")
+    print("5. 发送左侧命令")
+    print("6. 发送右侧命令")
     print("0. 退出")
     print("============================")
     return input("请选择操作: ")
@@ -140,7 +146,11 @@ def interactive_mode(client):
             client.send_command(command)
             
         elif choice == '2':
-            client.send_command({"type": COMMAND_TYPES["STOP"]})
+            scene_id = input("请输入场景ID (直接回车使用默认值): ")
+            command = {"type": COMMAND_TYPES["STOP"]}
+            if scene_id:
+                command["scene_id"] = scene_id
+            client.send_command(command)
             
         elif choice == '3':
             scene_id = input("请输入场景ID: ")
@@ -152,6 +162,20 @@ def interactive_mode(client):
         elif choice == '4':
             client.send_command({"type": COMMAND_TYPES["PING"]})
             
+        elif choice == '5':
+            scene_id = input("请输入场景ID: ")
+            if scene_id:
+                client.send_command({"type": COMMAND_TYPES["LEFT"], "scene_id": scene_id})
+            else:
+                print("场景ID不能为空")
+                
+        elif choice == '6':
+            scene_id = input("请输入场景ID: ")
+            if scene_id:
+                client.send_command({"type": COMMAND_TYPES["RIGHT"], "scene_id": scene_id})
+            else:
+                print("场景ID不能为空")
+                
         else:
             print("无效的选择")
         
@@ -171,16 +195,34 @@ def main():
             
         else:
             # 根据参数发送相应命令
-            if args.start:
-                client.send_command({"type": COMMAND_TYPES["START"]})
+            if args.start is not None:
+                command = {"type": COMMAND_TYPES["START"]}
+                if args.start:  # 如果提供了场景ID
+                    command["scene_id"] = args.start
+                client.send_command(command)
                 
-            elif args.stop:
-                client.send_command({"type": COMMAND_TYPES["STOP"]})
+            elif args.stop is not None:
+                command = {"type": COMMAND_TYPES["STOP"]}
+                if args.stop:  # 如果提供了场景ID
+                    command["scene_id"] = args.stop
+                client.send_command(command)
                 
             elif args.switch:
                 client.send_command({
                     "type": COMMAND_TYPES["SWITCH_SCENE"],
                     "scene_id": args.switch
+                })
+                
+            elif args.left:
+                client.send_command({
+                    "type": COMMAND_TYPES["LEFT"],
+                    "scene_id": args.left
+                })
+                
+            elif args.right:
+                client.send_command({
+                    "type": COMMAND_TYPES["RIGHT"],
+                    "scene_id": args.right
                 })
                 
             elif args.ping:
