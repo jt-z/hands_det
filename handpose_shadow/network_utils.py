@@ -40,7 +40,7 @@ class ResultSender:
         发送识别结果
         
         参数:
-            result (dict): 识别结果，至少包含 'id', 'name', 'similarity', 'group' 字段
+            result (dict): 识别结果，至少包含 'id', 'name', 'similarity', 'group', 'stream_type' 字段
             ip (str, 可选): 目标IP地址，默认使用初始化时设置的值
             port (int, 可选): 目标端口，默认使用初始化时设置的值
             
@@ -61,14 +61,19 @@ class ResultSender:
             "name": result.get("name", "Unknown"),
             "similarity": result.get("similarity", 0.0),
             "group": result.get("group", "unknown"),
+            "stream_type": result.get("stream_type", "left"),  # 新增流类型
             "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
         }
 
-        # 强制设置发送的消息内容为 0#id格式 , 默认为摄像头1
-        message_content_str = f"0#{message_data['id']}"
+        # 根据流类型确定消息格式 - 0表示左流，1表示右流
+        stream_type = result.get("stream_type", "left")
+        stream_prefix = "0" if stream_type == "left" else "1"
+        
+        # 强制设置发送的消息内容为 stream_prefix#id格式
+        message_content_str = f"{stream_prefix}#{message_data['id']}"
         message_data['content'] = message_content_str
-        print('Force send with 0#1001 format, message_content_str:', message_content_str)
-
+        
+        print(f'Sending {stream_type} stream result: {message_content_str}')
 
         self.logger.debug(f"Sending result: {message_data}")
         
@@ -123,17 +128,14 @@ class ResultSender:
             # 设置超时时间
             udp_socket.settimeout(1.0)
             
-            # 将数据转换为JSON字符串并编码
-            message_json = json.dumps(message_data)
-            message_bytes = message_json.encode('utf-8')
-            
-            # 强制改为只发送contens中的数据
+            # 优先发送content中的简化格式，如果没有则发送完整JSON
             if 'content' in message_data:
                 message_bytes = message_data['content'].encode('utf-8')
             else:
-                # 处理缺少 content 的情况
-                message_bytes = "0#1001".encode('utf-8')  # 或者抛出异常
-
+                # 兜底方案：发送完整JSON
+                message_json = json.dumps(message_data)
+                message_bytes = message_json.encode('utf-8')
+            
             # 指定目标地址
             server_address = (ip, port)
             
@@ -145,7 +147,7 @@ class ResultSender:
                     # 发送消息
                     udp_socket.sendto(message_bytes, server_address)
                     
-                    self.logger.debug(f"Message sent to {ip}:{port}")
+                    self.logger.debug(f"Message sent to {ip}:{port}: {message_bytes.decode('utf-8')}")
                     success = True
                     break
                     
