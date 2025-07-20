@@ -202,7 +202,9 @@ class CommandHandler:
             COMMAND_TYPES["START"]: [],
             COMMAND_TYPES["STOP"]: [],
             COMMAND_TYPES["SWITCH_SCENE"]: [],
-            COMMAND_TYPES["PING"]: []
+            COMMAND_TYPES["PING"]: []        ,
+            COMMAND_TYPES["LEFT"]: [],   # 新增
+            COMMAND_TYPES["RIGHT"]: []   # 新增
         }
     
     def register_handler(self, command_type, handler):
