@@ -54,9 +54,42 @@ class HandShadowSystem:
         # 设置信号处理，优雅地处理退出
         signal.signal(signal.SIGINT, self.signal_handler)
         signal.signal(signal.SIGTERM, self.signal_handler)
+
+        # 双流控制状态
+        self.left_stream_active = False    
+        self.right_stream_active = False   
+        self.left_target_id = None         
+        self.right_target_id = None        
+        
+        # 双流状态锁
+        self.stream_control_lock = threading.Lock()
         
         self.logger.info("System initialized")
     
+    # 添加流控制方法
+    def activate_left_stream(self, target_id):
+        """激活左流识别特定目标"""
+        with self.stream_control_lock:
+            self.left_stream_active = True
+            self.left_target_id = target_id
+            self.logger.info(f"Left stream activated for target: {target_id}")
+
+    def activate_right_stream(self, target_id):
+        """激活右流识别特定目标"""
+        with self.stream_control_lock:
+            self.right_stream_active = True
+            self.right_target_id = target_id
+            self.logger.info(f"Right stream activated for target: {target_id}")
+
+    def deactivate_streams(self):
+        """停用所有流"""
+        with self.stream_control_lock:
+            self.left_stream_active = False
+            self.right_stream_active = False
+            self.left_target_id = None
+            self.right_target_id = None
+            self.logger.info("All streams deactivated")
+
     def parse_args(self):
         """解析命令行参数"""
         parser = argparse.ArgumentParser(description='手影识别系统')
@@ -105,9 +138,10 @@ class HandShadowSystem:
             lambda cmd, addr: self.start_processing()
         )
         
+        # 更新STOP命令，停用所有流
         self.command_handler.register_handler(
             COMMAND_TYPES["STOP"], 
-            lambda cmd, addr: self.stop_processing()
+            lambda cmd, addr: (self.stop_processing(), self.deactivate_streams())
         )
         
         self.command_handler.register_handler(
@@ -119,7 +153,19 @@ class HandShadowSystem:
             COMMAND_TYPES["PING"], 
             lambda cmd, addr: self.logger.debug(f"Received ping from {addr}")
         )
-    
+        
+
+        
+        # 更新LEFT和RIGHT命令处理
+        self.command_handler.register_handler(
+            COMMAND_TYPES["LEFT"], 
+            lambda cmd, addr: self.activate_left_stream(cmd.get("scene_id"))
+        )
+        
+        self.command_handler.register_handler(
+            COMMAND_TYPES["RIGHT"], 
+            lambda cmd, addr: self.activate_right_stream(cmd.get("scene_id"))
+        )
     def handle_command(self, command, addr):
         """
         处理接收到的命令
