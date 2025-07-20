@@ -18,6 +18,10 @@ handpose_shadow/build
 handpose_shadow/dist
 handpose_shadow/logs/*
 
+**/*.egg-info/
+**/build/
+**/dist/
+
 handpose_shadow/__pycache__
 handpose_shadow/handpose_shadow.egg-info
 handpose_shadow/handpose_shadow.spec
