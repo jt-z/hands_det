@@ -58,8 +58,8 @@ class HandShadowSystem:
         # 双流控制状态
         self.left_stream_active = False    
         self.right_stream_active = False   
-        self.left_target_id = "1001" # 设置默认为 1001         
-        self.right_target_id = "1002"   # 设置默认为 1001     
+        self.left_target_id = "1011" # 设置默认为 1001         
+        self.right_target_id = "1012"   # 设置默认为 1001     
         
         # 双流状态锁
         self.stream_control_lock = threading.Lock()
@@ -318,6 +318,11 @@ class HandShadowSystem:
             else:
                 return frame  # 无效流ID直接返回
         
+        # 添加这个调试输出
+        print(f"DEBUG: {stream_id} - active: {should_send_result}, target: {target_id}")
+    
+        # print('current_templates', current_templates )
+
         # 如果没有target_id或target_id不在模板中，直接返回
         if not target_id or target_id not in current_templates:
             cv.putText(frame, f"No target set for {stream_id}", (10, 30), 
