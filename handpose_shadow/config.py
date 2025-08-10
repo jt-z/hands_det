@@ -13,8 +13,8 @@ LOGS_DIR = os.path.join(BASE_DIR, "logs")
 
 # 视频设置
 VIDEO_SOURCE = 0  # 0表示默认摄像头
-FRAME_WIDTH = 640  # 处理帧的宽度
-FRAME_HEIGHT = 480  # 处理帧的高度
+FRAME_WIDTH = 512 # 640  # 处理帧的宽度
+FRAME_HEIGHT = 512 # 480  # 处理帧的高度
 FRAME_SKIP = 5  # 每隔多少帧处理一次
 SHOW_PREVIEW = True  # 是否显示预览窗口
 

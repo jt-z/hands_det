@@ -281,6 +281,22 @@ class HandShadowSystem:
         
         return video_sources
     
+    def center_crop_square(self, img):
+        """居中裁剪为正方形，以短边为准"""
+        h, w = img.shape[:2]
+        
+        # 以短边为准确定正方形边长
+        size = min(h, w)
+        
+        # 计算裁剪起始坐标（居中）
+        start_x = (w - size) // 2
+        start_y = (h - size) // 2
+        
+        # 裁剪正方形区域
+        cropped = img[start_y:start_y + size, start_x:start_x + size]
+        
+        return cropped
+
     def process_single_stream_frame(self, frame, stream_id, state):
         """
         处理单个视频流的帧 - 简化版本，只匹配target_id模板
@@ -298,6 +314,10 @@ class HandShadowSystem:
 
         # 调整帧大小
         if frame.shape[1] != FRAME_WIDTH or frame.shape[0] != FRAME_HEIGHT:
+            # 居中裁剪，然后缩放到512 512
+            # 先居中裁剪为正方形
+            frame = self.center_crop_square(frame) 
+            # 调整图像大小为512x512 
             frame = resize_image(frame, FRAME_WIDTH, FRAME_HEIGHT)
 
         # 获取当前模板组
@@ -330,9 +350,13 @@ class HandShadowSystem:
             return frame
 
         try:
+
+            # 对 视频帧进行 和模板一样的高斯模糊过滤
+            frame = cv.GaussianBlur(frame, (5, 5), 0) # 5,5 
+
             # 检测手部
-            mask, hand_contour = self.hand_detector.detect_hand(frame)
-            
+            mask, hand_contour = self.hand_detector.detect_hand(frame) 
+
             # 创建信息显示区域
             info_panel = np.ones((frame.shape[0], 300, 3), dtype=np.uint8) * 240
             

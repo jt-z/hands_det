@@ -81,6 +81,23 @@ class TemplateGenerator:
             group_dir.mkdir(exist_ok=True)
             print(f"创建目录: {group_dir}")
     
+
+    def center_crop_square(self, img):
+        """居中裁剪为正方形，以短边为准"""
+        h, w = img.shape[:2]
+        
+        # 以短边为准确定正方形边长
+        size = min(h, w)
+        
+        # 计算裁剪起始坐标（居中）
+        start_x = (w - size) // 2
+        start_y = (h - size) // 2
+        
+        # 裁剪正方形区域
+        cropped = img[start_y:start_y + size, start_x:start_x + size]
+        
+        return cropped
+
     def process_single_image(self, image_path, output_path, show_steps=False):
         """
         处理单张手部图像，提取轮廓并生成黑白模板
@@ -100,6 +117,9 @@ class TemplateGenerator:
                 print(f"无法读取图像: {image_path}")
                 return False
             
+            # 先居中裁剪为正方形
+            img = self.center_crop_square(img)
+
             # 调整图像大小为512x512
             img = cv2.resize(img, (512, 512))
             
