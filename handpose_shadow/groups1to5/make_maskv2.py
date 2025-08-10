@@ -123,10 +123,10 @@ class TemplateGenerator:
                 _, mask = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
             
             # 应用形态学操作来改善掩码
-            kernel = np.ones((5, 5), np.uint8)
-            mask = cv2.erode(mask, kernel, iterations=1)
-            mask = cv2.dilate(mask, kernel, iterations=3)
-            mask = cv2.GaussianBlur(mask, (5, 5), 0)
+            # kernel = np.ones((3, 3), np.uint8) # 5,5 
+            # mask = cv2.erode(mask, kernel, iterations=1)
+            # mask = cv2.dilate(mask, kernel, iterations=3)
+            mask = cv2.GaussianBlur(mask, (5, 5), 0) # 5,5 
             
             # 查找轮廓
             contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -328,7 +328,8 @@ def main():
 
     # 修改路径，改成更新后的代码路径。
     # input_base_dir = "D:\Documents\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\groups1to5\original_pics"
-    input_base_dir = "D:\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\groups1to5\original_pics"
+    # input_base_dir = "D:\Onedrive\Documents\A_Dashboard\PartTime\HandPoseShadow\handpose_shadow\groups1to5\original_pics"
+    input_base_dir = "D:\dev_handshadow\\2025_2\\20250801_new_english"
     output_base_dir = ".\outputv2"
     
     # 创建生成器
