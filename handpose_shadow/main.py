@@ -24,6 +24,7 @@ from handpose_shadow.config import (
 from handpose_shadow.template_manager import TemplateManager
 from handpose_shadow.hand_detector import HandDetector
 from handpose_shadow.contour_matcher import ContourMatcher
+from handpose_shadow.image_matcher import ImageMatcher
 from handpose_shadow.network_utils import send_result, send_ok, send_error
 from handpose_shadow.command_server import CommandServer, CommandHandler
 from handpose_shadow.utils.logging_utils import get_logger
@@ -58,8 +59,8 @@ class HandShadowSystem:
         # 双流控制状态
         self.left_stream_active = False    
         self.right_stream_active = False   
-        self.left_target_id = "1011" # 设置默认为 1001         
-        self.right_target_id = "1012"   # 设置默认为 1001     
+        self.left_target_id = "1004" # 设置默认为 1001         
+        self.right_target_id = "1004"   # 设置默认为 1001     
         
         # 双流状态锁
         self.stream_control_lock = threading.Lock()
@@ -106,6 +107,8 @@ class HandShadowSystem:
         # 创建轮廓匹配器
         self.contour_matcher = ContourMatcher()
         
+        self.original_image_matcher = ImageMatcher()
+
         # 创建命令处理器
         self.command_handler = CommandHandler()
         self.register_command_handlers()
@@ -354,7 +357,9 @@ class HandShadowSystem:
             # 对 视频帧进行 和模板一样的高斯模糊过滤
             frame = cv.GaussianBlur(frame, (5, 5), 0) # 5,5 
 
-            # 检测手部
+
+
+            # 从视频帧中检测手部
             mask, hand_contour = self.hand_detector.detect_hand(frame) 
 
             # 创建信息显示区域
@@ -379,12 +384,56 @@ class HandShadowSystem:
             match_result = None
 
             if hand_contour is not None:
+
+                # 有检测到手的情况下，才进行模板匹配！
+
+                target_template = current_templates[target_id] 
+
+                weight_keypoints = 1
+                weight_hu = 0
+                similarity = 0
+
+                # ************************************基于 手势关节点 的手势相似度 start: ************************************
+                # 确实先检测到手之后，然后根据手势的关节点 进行向量相似度匹配等计算相似度 是可以的，然后之后再辅助一下 轮廓Hu算法，  设置 权重分布， 手势 权重 0.8 , Hu轮廓相似度 权重 0.2
+
+
+                similarity_keypoints= 0
+
+                    # 对模板图片 进行 手部检测并进行手臂去除裁剪，并得到返回后的 手部关键点。
+
+                    # 对当前视频帧 进行 手部检测并进行手臂去除裁剪，并得到返回后的 手部关键点。
+
+                # 比较  当前视频帧 和 模板图片 之间 通过 手部关键点计算得到的相似度
+
+                    # 视频帧frame   模板图片 需要读取
+                template_original_image = target_template["original"]       
+                current_frame = frame         
+                similarity_keypoints = self.original_image_matcher._compare_images(
+                        template_original_image, current_frame)
+
+                # ************************************基于 手势关节点 的手势相似度 end: ***************************************
+
+                # ===========================================================================================================
+                # ===========================================================================================================
+
+                # ************************************ 基于 轮廓Hu 的手势相似度 检测 start: ************************************
+
+
                 # 只与target_id模板匹配
-                target_template = current_templates[target_id]
-                similarity = self.contour_matcher._compare_contours(
-                    target_template["contour"], hand_contour)
+
+
+                if weight_hu > 0: # 只有在 权重不为0时，才进行 轮廓Hu 相似度检测 
+                    similarity_hu = self.contour_matcher._compare_contours(
+                        target_template["contour"], hand_contour)
+                else:
+                    similarity_hu = 0   
+                
+                similarity = similarity_keypoints * weight_keypoints + similarity_hu * weight_keypoints # 复合权重结果。
+                
                 threshold = target_template.get("threshold", self.contour_matcher.default_threshold)
                 
+                # ************************************ 基于 轮廓Hu 的手势相似度 检测 end************************************
+
                 match_result = {
                     "id": target_id,
                     "name": target_template.get("name", target_id),
