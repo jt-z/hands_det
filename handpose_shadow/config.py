@@ -19,8 +19,8 @@ FRAME_SKIP = 5  # 每隔多少帧处理一次
 SHOW_PREVIEW = True  # 是否显示预览窗口
 
 # 识别参数
-SIMILARITY_THRESHOLD = 45  # 默认相似度阈值
-CONSECUTIVE_FRAMES = 5  # 连续多少帧匹配才认为成功
+SIMILARITY_THRESHOLD = 75  # keypoints  # Hu 45  # 默认相似度阈值
+CONSECUTIVE_FRAMES = 3  # 连续多少帧匹配才认为成功
 MIN_CONTOUR_AREA = 5000  # 最小手部轮廓面积（过滤小噪点）
 
 # 皮肤检测参数
