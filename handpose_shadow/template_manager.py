@@ -65,6 +65,15 @@ class TemplateManager:
                 # 加载并处理模板图像
                 template_contour = self._load_template(full_path)
                 
+
+                # 添加原始模板图像 名字
+                # 将 full_path 文件全名 .png替换为  _original.png  .jpg
+                full_path_original=full_path.replace(".png", ".jpg") 
+                
+                # 加载并处理用于关节点的原始图像
+                template_original = self._load_original(full_path_original)
+
+
                 if template_contour is None:
                     self.logger.warning(f"Failed to load template: {file_path}")
                     continue
@@ -74,6 +83,7 @@ class TemplateManager:
                     "id": template_id,
                     "name": name,
                     "contour": template_contour,
+                    "original": template_original,
                     "threshold": threshold,
                     "path": full_path
                 }
@@ -131,6 +141,36 @@ class TemplateManager:
         """
         return list(self.template_groups.keys())
     
+    # 修改template_manager.py中的_load_original方法
+    def _load_original(self, file_path):
+        """
+        加载模板的原始图像
+        
+        参数:
+            file_path (str): 模板的原始图像文件路径
+            
+        返回:
+            numpy.ndarray: 处理后的模板轮廓，如果加载失败则返回None
+        """
+        # 检查文件是否存在
+        if not os.path.exists(file_path):
+            self.logger.error(f"Template Original file not found: {file_path}")
+            return None
+        
+        try:
+            # 加载图像
+            original_img = cv.imread(file_path, cv.IMREAD_UNCHANGED)
+            
+            if original_img is None:
+                self.logger.error(f"Failed to read image: {file_path}")
+                return None
+            else:
+                return original_img
+            
+        except Exception as e:
+            self.logger.error(f"Error processing template original file  {file_path}: {e}")
+            return None
+
     # 修改template_manager.py中的_load_template方法
     def _load_template(self, file_path):
         """
