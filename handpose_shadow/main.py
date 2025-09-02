@@ -25,6 +25,7 @@ from handpose_shadow.template_manager import TemplateManager
 from handpose_shadow.hand_detector import HandDetector
 from handpose_shadow.contour_matcher import ContourMatcher
 from handpose_shadow.image_matcher import ImageMatcher
+from handpose_shadow.inception_image_matcher import InceptionImageMatcher
 from handpose_shadow.network_utils import send_result, send_ok, send_error
 from handpose_shadow.command_server import CommandServer, CommandHandler
 from handpose_shadow.utils.logging_utils import get_logger
@@ -108,6 +109,13 @@ class HandShadowSystem:
         self.contour_matcher = ContourMatcher()
         
         self.original_image_matcher = ImageMatcher()
+
+        model_path = 'handpose_shadow/HSPR_InceptionV3.pt'
+        similarity_threshold = 85 # 在这里手动设置 inception的 检测阈值。 实际测试中，这个值应该在 85 左右。
+        self.original_inception_image_matcher = InceptionImageMatcher(            
+            model_path=model_path,
+            default_threshold=similarity_threshold
+            )
 
         # 创建命令处理器
         self.command_handler = CommandHandler()
@@ -389,29 +397,56 @@ class HandShadowSystem:
 
                 target_template = current_templates[target_id] 
 
-                weight_keypoints = 1
+                weight_keypoints = 0
                 weight_hu = 0
+                weight_inception = 1
+                
                 similarity = 0
-
+                similarity_keypoints = 0
+                similarity_hu = 0
+                similarity_inception = 0
+                
                 # ************************************基于 手势关节点 的手势相似度 start: ************************************
                 # 确实先检测到手之后，然后根据手势的关节点 进行向量相似度匹配等计算相似度 是可以的，然后之后再辅助一下 轮廓Hu算法，  设置 权重分布， 手势 权重 0.8 , Hu轮廓相似度 权重 0.2
 
+                if weight_keypoints > 0.99 : 
+                    similarity_keypoints= 0
 
-                similarity_keypoints= 0
+                        # 对模板图片 进行 手部检测并进行手臂去除裁剪，并得到返回后的 手部关键点。
 
-                    # 对模板图片 进行 手部检测并进行手臂去除裁剪，并得到返回后的 手部关键点。
+                        # 对当前视频帧 进行 手部检测并进行手臂去除裁剪，并得到返回后的 手部关键点。
 
-                    # 对当前视频帧 进行 手部检测并进行手臂去除裁剪，并得到返回后的 手部关键点。
+                    # 比较  当前视频帧 和 模板图片 之间 通过 手部关键点计算得到的相似度
 
-                # 比较  当前视频帧 和 模板图片 之间 通过 手部关键点计算得到的相似度
-
-                    # 视频帧frame   模板图片 需要读取
-                template_original_image = target_template["original"]       
-                current_frame = frame         
-                similarity_keypoints = self.original_image_matcher._compare_images(
-                        template_original_image, current_frame)
+                        # 视频帧frame   模板图片 需要读取
+                    template_original_image = target_template["original"]       
+                    current_frame = frame         
+                    similarity_keypoints = self.original_image_matcher._compare_images(
+                            template_original_image, current_frame)
 
                 # ************************************基于 手势关节点 的手势相似度 end: ***************************************
+
+                
+                # ************************************基于 inception特征向量的手势相似度 start: ************************************
+                # 确实先检测到手之后，然后根据手势的关节点 进行向量相似度匹配等计算相似度 是可以的，然后之后再辅助一下 轮廓Hu算法，  设置 权重分布， 手势 权重 0.8 , Hu轮廓相似度 权重 0.2
+
+                elif  weight_inception > 0.99 : 
+                    similarity_inception = 0
+
+                        # 对模板图片 进行 手部检测并进行手臂去除裁剪，并得到返回后的 手部关键点。
+
+                        # 对当前视频帧 进行 手部检测并进行手臂去除裁剪，并得到返回后的 手部关键点。
+
+                    # 比较  当前视频帧 和 模板图片 之间 通过 手部关键点计算得到的相似度
+
+                        # 视频帧frame   模板图片 需要读取
+                    template_original_image = target_template["original"]       
+                    current_frame = frame         
+                    similarity_inception = self.original_inception_image_matcher._compare_images(
+                            template_original_image, current_frame)
+
+                # ************************************基于 手势关节点 的手势相似度 end: ***************************************
+
 
                 # ===========================================================================================================
                 # ===========================================================================================================
@@ -422,13 +457,13 @@ class HandShadowSystem:
                 # 只与target_id模板匹配
 
 
-                if weight_hu > 0: # 只有在 权重不为0时，才进行 轮廓Hu 相似度检测 
+                elif weight_hu > 0: # 只有在 权重不为0时，才进行 轮廓Hu 相似度检测 
                     similarity_hu = self.contour_matcher._compare_contours(
                         target_template["contour"], hand_contour)
                 else:
                     similarity_hu = 0   
                 
-                similarity = similarity_keypoints * weight_keypoints + similarity_hu * weight_keypoints # 复合权重结果。
+                similarity = similarity_keypoints * weight_keypoints + similarity_hu * weight_keypoints + weight_inception * similarity_inception# 复合权重结果。
                 
                 threshold = target_template.get("threshold", self.contour_matcher.default_threshold)
                 
@@ -471,7 +506,7 @@ class HandShadowSystem:
                             cv.FONT_HERSHEY_SIMPLEX, 0.6, result_color, 2)
                     
                     # 绘制轮廓
-                    cv.drawContours(frame, [hand_contour], -1, result_color, 2)
+                    # cv.drawContours(frame, [hand_contour], -1, result_color, 2)
                     
                     # 关键逻辑：只有在流激活且连续匹配达到阈值时才发送结果
                     if (should_send_result and 
@@ -720,8 +755,25 @@ class HandShadowSystem:
             self.stop()
             self.logger.info("System shutdown complete")
 
+# 导入有效性检查模块
+from validity_checker import (
+    is_software_valid,
+)
+
+
 def main():
     """主函数"""
+
+    ### 添加系统检查，软件是否不能运行。 
+    # 设置只有5天有效期,检查系统的日期是否是在 2025.9.1 到 2025.9.7 日之间
+    
+    # 方式一：最简单的检查
+    if not is_software_valid():
+        print("❌ 软件验证失败，程序无法运行")
+        return False
+    
+    print("✅ 验证通过，程序正常启动")
+
     system = HandShadowSystem()
     system.run()
 
