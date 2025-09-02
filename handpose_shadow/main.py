@@ -756,7 +756,7 @@ class HandShadowSystem:
             self.logger.info("System shutdown complete")
 
 # 导入有效性检查模块
-from validity_checker import (
+from handpose_shadow.validity_checker import (
     is_software_valid,
 )
 
