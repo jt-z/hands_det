@@ -18,13 +18,38 @@ FRAME_HEIGHT = 512 # 480  # 处理帧的高度
 FRAME_SKIP = 5  # 每隔多少帧处理一次
 SHOW_PREVIEW = True  # 是否显示预览窗口
 
+# ------
+
+import json
+import os
+import sys
+
+# 获取exe文件所在目录
+if getattr(sys, 'frozen', False):
+    # 打包后的exe环境
+    base_path = os.path.dirname(sys.executable)
+else:
+    # 开发环境
+    base_path = os.path.dirname(os.path.abspath(__file__))
+
+config_path = os.path.join(base_path, 'config.json')
+
+with open(config_path, 'r', encoding='utf-8') as f:
+    config = json.load(f)
+
+CONSECUTIVE_FRAMES = config['CONSECUTIVE_FRAMES']
+DEFAULT_GROUP = config['DEFAULT_GROUP'] 
+TEMPLATE_THRESHOLD = config['TEMPLATE_THRESHOLD']
+
+# ------
+
 
 # TEMPLATE_THRESHOLD 降低到TEMPLATE_THRESHOLD
-TEMPLATE_THRESHOLD = 80
+# TEMPLATE_THRESHOLD = 83
 
 # 识别参数
 SIMILARITY_THRESHOLD = TEMPLATE_THRESHOLD  # keypoints  # Hu 45  # 默认相似度阈值
-CONSECUTIVE_FRAMES = 3  # 连续多少帧匹配才认为成功
+# CONSECUTIVE_FRAMES = 3  # 连续多少帧匹配才认为成功
 MIN_CONTOUR_AREA = 5000  # 最小手部轮廓面积（过滤小噪点）
 
 # 皮肤检测参数
@@ -45,7 +70,7 @@ LOG_TO_FILE = True  # 是否记录日志到文件
 LOG_FILENAME = "hand_shadow.log"  # 日志文件名
 
 # 默认活动组
-DEFAULT_GROUP = "group1"
+# DEFAULT_GROUP = "group1"
 
 # 增加修改左右流的 识别的模板id
 DEFAULT_ANIMAL_ID_LEFT = "1002"
