@@ -354,6 +354,9 @@ class HandShadowSystem:
     
         # print('current_templates', current_templates )
 
+        # if not should_send_result :
+        #     return frame
+
         # 如果没有target_id或target_id不在模板中，直接返回
         if not target_id or target_id not in current_templates:
             cv.putText(frame, f"No target set for {stream_id}", (10, 30), 
@@ -442,8 +445,15 @@ class HandShadowSystem:
                         # 视频帧frame   模板图片 需要读取
                     template_original_image = target_template["original"]       
                     current_frame = frame         
+                    
+                    # 根据当前是左右流 获取要匹配的模板的id  
+                    if  stream_type == 'left':  
+                        template_id = self.left_target_id
+                    else:   
+                        template_id = self.right_target_id
+
                     similarity_inception = self.original_inception_image_matcher._compare_images(
-                            template_original_image, current_frame)
+                            template_original_image, current_frame, template_image_id=template_id)
 
                 # ************************************基于 手势关节点 的手势相似度 end: ***************************************
 
