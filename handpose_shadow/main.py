@@ -86,6 +86,13 @@ class HandShadowSystem:
         """解析命令行参数"""
         parser = argparse.ArgumentParser(description='手影识别系统')
         parser.add_argument('--video', type=str, help='视频文件路径')
+
+        # ==================================================================
+        # == 在这里添加新的RTSP参数 ==
+        parser.add_argument('--rtsp1', type=str, help='RTSP stream URL 1 (对应 stream_0 / 左流)')
+        parser.add_argument('--rtsp2', type=str, help='RTSP stream URL 2 (对应 stream_1 / 右流)')
+        # ==================================================================
+
         parser.add_argument('--camera', type=int, default=VIDEO_SOURCE, help='摄像头ID')
         parser.add_argument('--group', type=str, default=DEFAULT_GROUP, help='初始模板组')
         parser.add_argument('--send-ip', type=str, default=UDP_SEND_IP, help='结果发送目标IP')
@@ -233,7 +240,57 @@ class HandShadowSystem:
         """检测并初始化视频源"""
         video_sources = []
         
-        # 方案1: 如果指定了视频文件，只使用视频文件
+        # ==================================================================
+        # == 方案1: (新) 检查是否指定了 *至少一个* RTSP流
+        # ==================================================================
+        
+        # 只要 --rtsp1 或 --rtsp2 任何一个被指定，就进入RTSP模式
+        if self.args.rtsp1 or self.args.rtsp2:
+            self.logger.info("RTSP stream(s) specified. Entering RTSP mode.")
+            
+            # --- 尝试连接 RTSP Stream 1 (对应 stream_0 / 左流) ---
+            if self.args.rtsp1:
+                self.logger.info(f"Attempting to connect to Stream 0 (Left): {self.args.rtsp1}")
+                # 设置RTSP流使用TCP（更稳定，但延迟可能稍高）
+                # os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
+                cap0 = cv.VideoCapture(self.args.rtsp1)
+                
+                if cap0.isOpened():
+                    ret0, _ = cap0.read()
+                    if ret0:
+                        video_sources.append(cap0)
+                        self.logger.info("Successfully connected and read from Stream 0.")
+                    else:
+                        self.logger.error(f"Failed to read frame from Stream 0: {self.args.rtsp1} (Stream open but no data)")
+                        cap0.release()
+                else:
+                    self.logger.error(f"Failed to open Stream 0: {self.args.rtsp1}")
+            
+            # --- 尝试连接 RTSP Stream 2 (对应 stream_1 / 右流) ---
+            if self.args.rtsp2:
+                self.logger.info(f"Attempting to connect to Stream 1 (Right): {self.args.rtsp2}")
+                cap1 = cv.VideoCapture(self.args.rtsp2)
+                
+                if cap1.isOpened():
+                    ret1, _ = cap1.read()
+                    if ret1:
+                        video_sources.append(cap1)
+                        self.logger.info("Successfully connected and read from Stream 1.")
+                    else:
+                        self.logger.error(f"Failed to read frame from Stream 1: {self.args.rtsp2} (Stream open but no data)")
+                        cap1.release()
+                else:
+                    self.logger.error(f"Failed to open Stream 1: {self.args.rtsp2}")
+
+            # 在RTSP模式下，无论成功与否，都直接返回
+            # (即使用户指定了RTSP但失败了，也*不会*回退到本地摄像头)
+            if not video_sources:
+                 self.logger.warning("RTSP mode: No streams were successfully connected.")
+            return video_sources
+
+        # ==================================================================
+        # == 方案2: (原方案1) 如果指定了视频文件，只使用视频文件
+        # ==================================================================
         if self.args.video:
             cap = cv.VideoCapture(self.args.video)
             if cap.isOpened():
@@ -243,7 +300,9 @@ class HandShadowSystem:
                 self.logger.error(f"Failed to open video file: {self.args.video}")
             return video_sources
         
-        # 方案2: 检测可用的摄像头
+        # ==================================================================
+        # == 方案3: (原方案2) 检测可用的本地摄像头
+        # ==================================================================
         self.logger.info("Detecting available cameras...")
         
         # 检测摄像头0
