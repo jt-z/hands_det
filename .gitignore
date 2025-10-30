@@ -43,3 +43,6 @@ camera_test/工业相机的python_demo/cv_grab2.py
 camera_test/工业相机的python_demo/grab.py
 camera_test/工业相机的python_demo/mvsdk.py
 camera_test/工业相机的python_demo/readme.txt
+ 
+# 忽略同步大的权重文件
+handpose_shadow/HSPR_InceptionV3.pt
