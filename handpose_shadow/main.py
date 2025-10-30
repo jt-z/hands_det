@@ -19,7 +19,12 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from handpose_shadow.config import (
     VIDEO_SOURCE, FRAME_SKIP, CONSECUTIVE_FRAMES, FRAME_WIDTH, FRAME_HEIGHT,
     UDP_SEND_IP, UDP_SEND_PORT, UDP_LISTEN_IP, UDP_LISTEN_PORT,
-    DEFAULT_GROUP, COMMAND_TYPES, SHOW_PREVIEW
+    DEFAULT_GROUP, COMMAND_TYPES, SHOW_PREVIEW,
+
+    # ==================================================================
+    # == 在这里添加新的 import 变量 ==
+    VIDEO_SOURCE_MODE, RTSP_URL_1, RTSP_URL_2
+    # ==================================================================
 )
 from handpose_shadow.template_manager import TemplateManager
 from handpose_shadow.hand_detector import HandDetector
@@ -88,9 +93,27 @@ class HandShadowSystem:
         parser.add_argument('--video', type=str, help='视频文件路径')
 
         # ==================================================================
-        # == 在这里添加新的RTSP参数 ==
-        parser.add_argument('--rtsp1', type=str, help='RTSP stream URL 1 (对应 stream_0 / 左流)')
-        parser.add_argument('--rtsp2', type=str, help='RTSP stream URL 2 (对应 stream_1 / 右流)')
+        # == 修改此处：添加 mode 和 rtsp 参数 ==
+        # == 它们的 default 值来自 config.py
+        # ==================================================================
+        parser.add_argument(
+            '--mode', 
+            type=str, 
+            default=VIDEO_SOURCE_MODE, 
+            help='视频源模式: RTSP 或 LOCAL. 默认值来自 config.json'
+        )
+        parser.add_argument(
+            '--rtsp1', 
+            type=str, 
+            default=RTSP_URL_1, 
+            help='RTSP stream URL 1 (RTSP 模式). 默认值来自 config.json'
+        )
+        parser.add_argument(
+            '--rtsp2', 
+            type=str, 
+            default=RTSP_URL_2, 
+            help='RTSP stream URL 2 (RTSP 模式). 默认值来自 config.json'
+        )
         # ==================================================================
 
         parser.add_argument('--camera', type=int, default=VIDEO_SOURCE, help='摄像头ID')
@@ -244,49 +267,61 @@ class HandShadowSystem:
         # == 方案1: (新) 检查是否指定了 *至少一个* RTSP流
         # ==================================================================
         
-        # 只要 --rtsp1 或 --rtsp2 任何一个被指定，就进入RTSP模式
-        if self.args.rtsp1 or self.args.rtsp2:
-            self.logger.info("RTSP stream(s) specified. Entering RTSP mode.")
+        # ---------------------------------------------------------------
+        # 步骤 1: 检查模式 (来自 config.json 或 --mode 参数)
+        # ---------------------------------------------------------------
+        
+        if self.args.mode.upper() == 'RTSP':
+            # ==========================================================
+            # == 方案 1: RTSP 模式
+            # ==========================================================
+            self.logger.info(f"Using RTSP mode. Connecting to streams...")
             
-            # --- 尝试连接 RTSP Stream 1 (对应 stream_0 / 左流) ---
-            if self.args.rtsp1:
-                self.logger.info(f"Attempting to connect to Stream 0 (Left): {self.args.rtsp1}")
-                # 设置RTSP流使用TCP（更稳定，但延迟可能稍高）
-                # os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
-                cap0 = cv.VideoCapture(self.args.rtsp1)
-                
-                if cap0.isOpened():
-                    ret0, _ = cap0.read()
-                    if ret0:
-                        video_sources.append(cap0)
-                        self.logger.info("Successfully connected and read from Stream 0.")
-                    else:
-                        self.logger.error(f"Failed to read frame from Stream 0: {self.args.rtsp1} (Stream open but no data)")
-                        cap0.release()
-                else:
-                    self.logger.error(f"Failed to open Stream 0: {self.args.rtsp1}")
+            # 检查URL (来自 config.json 或 --rtsp1/--rtsp2 参数)
             
-            # --- 尝试连接 RTSP Stream 2 (对应 stream_1 / 右流) ---
-            if self.args.rtsp2:
-                self.logger.info(f"Attempting to connect to Stream 1 (Right): {self.args.rtsp2}")
-                cap1 = cv.VideoCapture(self.args.rtsp2)
+            # 只要 --rtsp1 或 --rtsp2 任何一个被指定，就进入RTSP模式
+            if self.args.rtsp1 or self.args.rtsp2:
+                self.logger.info("RTSP stream(s) specified. Entering RTSP mode.")
                 
-                if cap1.isOpened():
-                    ret1, _ = cap1.read()
-                    if ret1:
-                        video_sources.append(cap1)
-                        self.logger.info("Successfully connected and read from Stream 1.")
+                # --- 尝试连接 RTSP Stream 1 (对应 stream_0 / 左流) ---
+                if self.args.rtsp1:
+                    self.logger.info(f"Attempting to connect to Stream 0 (Left): {self.args.rtsp1}")
+                    # 设置RTSP流使用TCP（更稳定，但延迟可能稍高）
+                    # os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp"
+                    cap0 = cv.VideoCapture(self.args.rtsp1)
+                    
+                    if cap0.isOpened():
+                        ret0, _ = cap0.read()
+                        if ret0:
+                            video_sources.append(cap0)
+                            self.logger.info("Successfully connected and read from Stream 0.")
+                        else:
+                            self.logger.error(f"Failed to read frame from Stream 0: {self.args.rtsp1} (Stream open but no data)")
+                            cap0.release()
                     else:
-                        self.logger.error(f"Failed to read frame from Stream 1: {self.args.rtsp2} (Stream open but no data)")
-                        cap1.release()
-                else:
-                    self.logger.error(f"Failed to open Stream 1: {self.args.rtsp2}")
+                        self.logger.error(f"Failed to open Stream 0: {self.args.rtsp1}")
+                
+                # --- 尝试连接 RTSP Stream 2 (对应 stream_1 / 右流) ---
+                if self.args.rtsp2:
+                    self.logger.info(f"Attempting to connect to Stream 1 (Right): {self.args.rtsp2}")
+                    cap1 = cv.VideoCapture(self.args.rtsp2)
+                    
+                    if cap1.isOpened():
+                        ret1, _ = cap1.read()
+                        if ret1:
+                            video_sources.append(cap1)
+                            self.logger.info("Successfully connected and read from Stream 1.")
+                        else:
+                            self.logger.error(f"Failed to read frame from Stream 1: {self.args.rtsp2} (Stream open but no data)")
+                            cap1.release()
+                    else:
+                        self.logger.error(f"Failed to open Stream 1: {self.args.rtsp2}")
 
-            # 在RTSP模式下，无论成功与否，都直接返回
-            # (即使用户指定了RTSP但失败了，也*不会*回退到本地摄像头)
-            if not video_sources:
-                 self.logger.warning("RTSP mode: No streams were successfully connected.")
-            return video_sources
+                # 在RTSP模式下，无论成功与否，都直接返回
+                # (即使用户指定了RTSP但失败了，也*不会*回退到本地摄像头)
+                if not video_sources:
+                    self.logger.warning("RTSP mode: No streams were successfully connected.")
+                return video_sources
 
         # ==================================================================
         # == 方案2: (原方案1) 如果指定了视频文件，只使用视频文件
