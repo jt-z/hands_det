@@ -31,5 +31,15 @@ handpose_shadow.egg-info/*
 handpose_shadow/handpose_shadow.egg-info
 
 merge_udp/connect_unity/对接udp/HandShadow
+
+# 这些是无关的相机使用文件
 camera_test/HuaTengVision
-camera_test/PC驱动_linux的SDK
+camera_test/PC驱动_linux的SDK 
+
+# 这些是无关的相机文件 
+camera_test/工业相机的python_demo/cv_grab_callback.py
+camera_test/工业相机的python_demo/cv_grab.py
+camera_test/工业相机的python_demo/cv_grab2.py
+camera_test/工业相机的python_demo/grab.py
+camera_test/工业相机的python_demo/mvsdk.py
+camera_test/工业相机的python_demo/readme.txt
