@@ -4,26 +4,26 @@
 """
 
 import os
+ 
+# --- 路径设置（已修改）---
+# 路径定义已移动到下面 'exe' 检测逻辑之后，以确保 base_path 统一
+# ---
 
-# 路径设置
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# TEMPLATES_DIR = os.path.join(BASE_DIR, "groups1to5")
-TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
-LOGS_DIR = os.path.join(BASE_DIR, "logs")
 
 # 视频设置
 VIDEO_SOURCE = 0  # 0表示默认摄像头
 FRAME_WIDTH = 512 # 640  # 处理帧的宽度
 FRAME_HEIGHT = 512 # 480  # 处理帧的高度
-FRAME_SKIP = 5  # 每隔多少帧处理一次
+FRAME_SKIP = 5  # 每隔多少帧处理一次 # 之前是5 
 SHOW_PREVIEW = True  # 是否显示预览窗口
 
-# ------
+# ------ 加载 config.json 开始 -----
 
 import json
 import os
 import sys
 
+# --- 路径设置（已修改）---
 # 获取exe文件所在目录
 if getattr(sys, 'frozen', False):
     # 打包后的exe环境
@@ -32,7 +32,16 @@ else:
     # 开发环境
     base_path = os.path.dirname(os.path.abspath(__file__))
 
+# 统一在这里定义所有路径
 config_path = os.path.join(base_path, 'config.json')
+LOGS_DIR = os.path.join(base_path, "logs")
+# TEMPLATES_DIR 将用于拼接 JSON 中定义的相对路径
+# 假设 'templates' 文件夹与您的 config.json 位于同一级别
+
+#TEMPLATES_DIR = os.path.join(BASE_DIR, "groups1to5") 
+TEMPLATES_DIR = os.path.join(base_path, "templates") 
+# --- 路径设置结束 ---
+
 
 with open(config_path, 'r', encoding='utf-8') as f:
     config = json.load(f)
@@ -41,7 +50,23 @@ CONSECUTIVE_FRAMES = config['CONSECUTIVE_FRAMES']
 DEFAULT_GROUP = config['DEFAULT_GROUP'] 
 TEMPLATE_THRESHOLD = config['TEMPLATE_THRESHOLD']
 
-# ------
+# --- 新增：从 config.json 加载 TEMPLATE_GROUPS ---
+TEMPLATE_GROUPS = config['TEMPLATE_GROUPS']
+
+# --- 新增：遍历并修正文件路径 ---
+# 这一步至关重要：
+# 1. TEMPLATES_DIR 是绝对路径 (e.g., "C:\\MyProject\\templates")
+# 2. template['file'] 是 JSON 中的相对路径 (e.g., "group1/human.png")
+# 3. os.path.join 会智能地将它们组合成适用于 Windows 的绝对路径
+#    (e.g., "C:\\MyProject\\templates\\group1\\human.png")
+for group_name, templates in TEMPLATE_GROUPS.items():
+    for template in templates:
+        # 确保模板字典中有 'file' 键
+        if 'file' in template:
+            template['file'] = os.path.join(TEMPLATES_DIR, template['file'])
+# --- 新增结束 ---
+
+# ------ 加载 config.json 结束 -----
 
 
 # TEMPLATE_THRESHOLD 降低到TEMPLATE_THRESHOLD
@@ -77,45 +102,50 @@ DEFAULT_ANIMAL_ID_LEFT = "1002"
 DEFAULT_ANIMAL_ID_RIGHT = "1002"
 
 
+# --- 已删除 ---
+# 原本在这里的 TEMPLATE_GROUPS = { ... } 硬编码字典
+# 已被完全删除，因为它现在从 config.json 加载
 
-# 手影模板组定义
-TEMPLATE_GROUPS = {
-    "group1": [  # 城市场景  # 阈值统一从 35 提高到 80  
-        {"id": "1001", "file": os.path.join("group1", "human.png"), "name": "Ren_Human_人", "threshold": TEMPLATE_THRESHOLD}, # 人
-        {"id": "1002", "file": os.path.join("group1", "dog.png"), "name": "Gou_Dog_狗", "threshold": TEMPLATE_THRESHOLD}, # 狗
-        {"id": "1003", "file": os.path.join("group1", "weasel.png"), "name": "HuangYou_Weasel_黄鼬", "threshold": TEMPLATE_THRESHOLD}, #黄鼬
-        {"id": "1004", "file": os.path.join("group1", "hedgehog.png"), "name": "CiWei_Hedgehog_刺猬", "threshold": TEMPLATE_THRESHOLD}, #刺猬
-        {"id": "1005", "file": os.path.join("group1", "blackbird.png"), "name": "WuDong_Blackbird_乌鸫", "threshold": TEMPLATE_THRESHOLD}, #乌鸫
-    ],
-    "group2": [  # 冻原场景
-        {"id": "1006", "file": os.path.join("group2", "arctic_wolf.png"), "name": "BeiJiLang_ArcticWolf_北极狼", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1007", "file": os.path.join("group2", "reindeer.png"), "name": "XunLu_Reindeer_驯鹿", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1008", "file": os.path.join("group2", "ptarmigan.png"), "name": "YanLeiNiao_Ptarmigan_岩雷鸟", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1009", "file": os.path.join("group2", "musk_ox.png"), "name": "SheNiu_MuskOx_麝牛", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1010", "file": os.path.join("group2", "arctic_hare.png"), "name": "BeiJiTu_ArcticHare_北极兔", "threshold": TEMPLATE_THRESHOLD},
-    ],
-    "group3": [  # 稀树草原场景
-        {"id": "1011", "file": os.path.join("group3", "lion.png"), "name": "ShiZi_Lion_狮子", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1012", "file": os.path.join("group3", "gemsbok.png"), "name": "GaoJiaoLing_Gemsbok_高角羚", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1013", "file": os.path.join("group3", "elephant.png"), "name": "FeiZhouCaoYuanXiang_AfricanElephant_非洲草原象", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1014", "file": os.path.join("group3", "buffalo.png"), "name": "FeiZhouYeShuiNiu_AfricanBuffalo_非洲野水牛", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1015", "file": os.path.join("group3", "giraffe.png"), "name": "NanFangChangJingLu_SouthernGiraffe_南方长颈鹿", "threshold": TEMPLATE_THRESHOLD},
-    ],
-    "group4": [  # 针叶林场景
-        {"id": "1016", "file": os.path.join("group4", "tiger.png"), "name": "DongBeiHu_SiberianTiger_东北虎", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1017", "file": os.path.join("group4", "brown_bear.png"), "name": "ZongXiong_BrownBear_棕熊", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1018", "file": os.path.join("group4", "marten.png"), "name": "ZiDiao_SableMarten_紫貂", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1019", "file": os.path.join("group4", "snake.png"), "name": "ZongHeiJinShe_RussianRatSnake_棕黑锦蛇", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1020", "file": os.path.join("group4", "moose.png"), "name": "TuoLu_Moose_驼鹿", "threshold": TEMPLATE_THRESHOLD},
-    ],
-    "group5": [  # 雨林场景
-        {"id": "1021", "file": os.path.join("group5", "clouded_leopard.png"), "name": "XunTaYunBao_SundaCloudedLeopard_巽他云豹", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1022", "file": os.path.join("group5", "pygmy_marmoset.png"), "name": "FengHou_SlowLoris_蜂猴", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1023", "file": os.path.join("group5", "snake.png"), "name": "TianTangJinHuaShe_ParadiseTreeSnake_天堂金花蛇", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1024", "file": os.path.join("group5", "bat.png"), "name": "DuanWenGuoFu_ShortNosedFruitBat_短吻果蝠", "threshold": TEMPLATE_THRESHOLD},
-        {"id": "1025", "file": os.path.join("group5", "locust.png"), "name": "HuangChong_Locust_蝗虫", "threshold": TEMPLATE_THRESHOLD},
-    ],
-}
+# 手影模板组定义 
+# 因为要把全部信息暴露到外部，因此把这部分都注释掉了
+    # TEMPLATE_GROUPS = {
+    #     "group1": [  # 城市场景  # 阈值统一从 35 提高到 80  
+    #         {"id": "1001", "file": os.path.join("group1", "human.png"), "name": "Ren_Human_人", "threshold": TEMPLATE_THRESHOLD}, # 人
+    #         {"id": "1002", "file": os.path.join("group1", "dog.png"), "name": "Gou_Dog_狗", "threshold": TEMPLATE_THRESHOLD}, # 狗
+    #         {"id": "1003", "file": os.path.join("group1", "weasel.png"), "name": "HuangYou_Weasel_黄鼬", "threshold": TEMPLATE_THRESHOLD}, #黄鼬
+    #         {"id": "1004", "file": os.path.join("group1", "hedgehog.png"), "name": "CiWei_Hedgehog_刺猬", "threshold": TEMPLATE_THRESHOLD}, #刺猬
+    #         {"id": "1005", "file": os.path.join("group1", "blackbird.png"), "name": "WuDong_Blackbird_乌鸫", "threshold": TEMPLATE_THRESHOLD}, #乌鸫
+    #     ],
+    #     "group2": [  # 冻原场景
+    #         {"id": "1006", "file": os.path.join("group2", "arctic_wolf.png"), "name": "BeiJiLang_ArcticWolf_北极狼", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1007", "file": os.path.join("group2", "reindeer.png"), "name": "XunLu_Reindeer_驯鹿", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1008", "file": os.path.join("group2", "ptarmigan.png"), "name": "YanLeiNiao_Ptarmigan_岩雷鸟", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1009", "file": os.path.join("group2", "musk_ox.png"), "name": "SheNiu_MuskOx_麝牛", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1010", "file": os.path.join("group2", "arctic_hare.png"), "name": "BeiJiTu_ArcticHare_北极兔", "threshold": TEMPLATE_THRESHOLD},
+    #     ],
+    #     "group3": [  # 稀树草原场景
+    #         {"id": "1011", "file": os.path.join("group3", "lion.png"), "name": "ShiZi_Lion_狮子", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1012", "file": os.path.join("group3", "gemsbok.png"), "name": "GaoJiaoLing_Gemsbok_高角羚", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1013", "file": os.path.join("group3", "elephant.png"), "name": "FeiZhouCaoYuanXiang_AfricanElephant_非洲草原象", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1014", "file": os.path.join("group3", "buffalo.png"), "name": "FeiZhouYeShuiNiu_AfricanBuffalo_非洲野水牛", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1015", "file": os.path.join("group3", "giraffe.png"), "name": "NanFangChangJingLu_SouthernGiraffe_南方长颈鹿", "threshold": TEMPLATE_THRESHOLD},
+    #     ],
+    #     "group4": [  # 针叶林场景
+    #         {"id": "1016", "file": os.path.join("group4", "tiger.png"), "name": "DongBeiHu_SiberianTiger_东北虎", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1017", "file": os.path.join("group4", "brown_bear.png"), "name": "ZongXiong_BrownBear_棕熊", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1018", "file": os.path.join("group4", "marten.png"), "name": "ZiDiao_SableMarten_紫貂", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1019", "file": os.path.join("group4", "snake.png"), "name": "ZongHeiJinShe_RussianRatSnake_棕黑锦蛇", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1020", "file": os.path.join("group4", "moose.png"), "name": "TuoLu_Moose_驼鹿", "threshold": TEMPLATE_THRESHOLD},
+    #     ],
+    #     "group5": [  # 雨林场景
+    #         {"id": "1021", "file": os.path.join("group5", "clouded_leopard.png"), "name": "XunTaYunBao_SundaCloudedLeopard_巽他云豹", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1022", "file": os.path.join("group5", "pygmy_marmoset.png"), "name": "FengHou_SlowLoris_蜂猴", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1023", "file": os.path.join("group5", "snake.png"), "name": "TianTangJinHuaShe_ParadiseTreeSnake_天堂金花蛇", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1024", "file": os.path.join("group5", "bat.png"), "name": "DuanWenGuoFu_ShortNosedFruitBat_短吻果蝠", "threshold": TEMPLATE_THRESHOLD},
+    #         {"id": "1025", "file": os.path.join("group5", "locust.png"), "name": "HuangChong_Locust_蝗虫", "threshold": TEMPLATE_THRESHOLD},
+    #     ],
+    # }
+# --- 已删除 ---
 
 # 命令定义
 COMMAND_TYPES = {

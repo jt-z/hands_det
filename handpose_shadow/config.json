@@ -1,5 +1,167 @@
 {
   "CONSECUTIVE_FRAMES": 3,
   "DEFAULT_GROUP": "group1",
-  "TEMPLATE_THRESHOLD": 83
+  "TEMPLATE_THRESHOLD": 83,
+  "TEMPLATE_GROUPS": {
+    "group1": [
+      {
+        "id": "1001",
+        "file": "group1/human.png",
+        "name": "Ren_Human_人",
+        "threshold": 83
+      },
+      {
+        "id": "1002",
+        "file": "group1/dog.png",
+        "name": "Gou_Dog_狗",
+        "threshold": 83
+      },
+      {
+        "id": "1003",
+        "file": "group1/weasel.png",
+        "name": "HuangYou_Weasel_黄鼬",
+        "threshold": 83
+      },
+      {
+        "id": "1004",
+        "file": "group1/hedgehog.png",
+        "name": "CiWei_Hedgehog_刺猬",
+        "threshold": 84
+      },
+      {
+        "id": "1005",
+        "file": "group1/blackbird.png",
+        "name": "WuDong_Blackbird_乌鸫",
+        "threshold": 83
+      }
+    ],
+    "group2": [
+      {
+        "id": "1006",
+        "file": "group2/arctic_wolf.png",
+        "name": "BeiJiLang_ArcticWolf_北极狼",
+        "threshold": 83
+      },
+      {
+        "id": "1007",
+        "file": "group2/reindeer.png",
+        "name": "XunLu_Reindeer_驯鹿",
+        "threshold": 83
+      },
+      {
+        "id": "1008",
+        "file": "group2/ptarmigan.png",
+        "name": "YanLeiNiao_Ptarmigan_岩雷鸟",
+        "threshold": 83
+      },
+      {
+        "id": "1009",
+        "file": "group2/musk_ox.png",
+        "name": "SheNiu_MuskOx_麝牛",
+        "threshold": 83
+      },
+      {
+        "id": "1010",
+        "file": "group2/arctic_hare.png",
+        "name": "BeiJiTu_ArcticHare_北极兔",
+        "threshold": 83
+      }
+    ],
+    "group3": [
+      {
+        "id": "1011",
+        "file": "group3/lion.png",
+        "name": "ShiZi_Lion_狮子",
+        "threshold": 83
+      },
+      {
+        "id": "1012",
+        "file": "group3/gemsbok.png",
+        "name": "GaoJiaoLing_Gemsbok_高角羚",
+        "threshold": 83
+      },
+      {
+        "id": "1013",
+        "file": "group3/elephant.png",
+        "name": "FeiZhouCaoYuanXiang_AfricanElephant_非洲草原象",
+        "threshold": 83
+      },
+      {
+        "id": "1014",
+        "file": "group3/buffalo.png",
+        "name": "FeiZhouYeShuiNiu_AfricanBuffalo_非洲野水牛",
+        "threshold": 83
+      },
+      {
+        "id": "1015",
+        "file": "group3/giraffe.png",
+        "name": "NanFangChangJingLu_SouthernGiraffe_南方长颈鹿",
+        "threshold": 83
+      }
+    ],
+    "group4": [
+      {
+        "id": "1016",
+        "file": "group4/tiger.png",
+        "name": "DongBeiHu_SiberianTiger_东北虎",
+        "threshold": 83
+      },
+      {
+        "id": "1017",
+        "file": "group4/brown_bear.png",
+        "name": "ZongXiong_BrownBear_棕熊",
+        "threshold": 83
+      },
+      {
+        "id": "1018",
+        "file": "group4/marten.png",
+        "name": "ZiDiao_SableMarten_紫貂",
+        "threshold": 83
+      },
+      {
+        "id": "1019",
+        "file": "group4/snake.png",
+        "name": "ZongHeiJinShe_RussianRatSnake_棕黑锦蛇",
+        "threshold": 83
+      },
+      {
+        "id": "1020",
+        "file": "group4/moose.png",
+        "name": "TuoLu_Moose_驼鹿",
+        "threshold": 83
+      }
+    ],
+    "group5": [
+      {
+        "id": "1021",
+        "file": "group5/clouded_leopard.png",
+        "name": "XunTaYunBao_SundaCloudedLeopard_巽他云豹",
+        "threshold": 83
+      },
+      {
+        "id": "1022",
+        "file": "group5/pygmy_marmoset.png",
+        "name": "FengHou_SlowLoris_蜂猴",
+        "threshold": 83
+      },
+      {
+        "id": "1023",
+        "file": "group5/snake.png",
+        "name": "TianTangJinHuaShe_ParadiseTreeSnake_天堂金花蛇",
+        "threshold": 83
+      },
+      {
+        "id": "1024",
+        "file": "group5/bat.png",
+        "name": "DuanWenGuoFu_ShortNosedFruitBat_短吻果蝠",
+        "threshold": 83
+      },
+      {
+        "id": "1025",
+        "file": "group5/locust.png",
+        "name": "HuangChong_Locust_蝗虫",
+        "threshold": 83
+      }
+    ]
+  }
 }
