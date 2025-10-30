@@ -139,7 +139,35 @@ class InceptionImageMatcher:
         
         else:
             raise TypeError(f"Unsupported image type: {type(image)}")
-    
+     
+
+    def extract_features_by_template_id(self, template_image_id) -> Optional[np.ndarray]:
+        # 读取对应名字的 npy文件
+        """
+        从本地文件加载指定模板的预计算特征。
+        
+        参数:
+            group_id (str): 模板组ID
+            template_id (str): 模板ID
+            
+        返回:
+            np.ndarray: 加载的特征向量，如果文件不存在或加载失败则返回None
+        """ 
+
+        cache_directory = "handpose_shadow"  # 默认在当前目录 
+        # 使用 os.path.join() 来安全地构建路径
+        feature_path = os.path.join("handpose_shadow","features_cache", f'{template_image_id}.npy')
+
+        if os.path.exists(feature_path):
+            try:
+                return np.load(feature_path)
+            except Exception as e:
+                print(f"Error loading feature file {feature_path}: {e}")
+                return None
+
+        print(f"Feature file not found: {feature_path}. It may need to be computed first.")
+        return None 
+
     def extract_features(self, image: Union[str, np.ndarray, Image.Image]) -> Optional[np.ndarray]:
         """
         从图像中提取Inception V3特征向量
@@ -177,7 +205,8 @@ class InceptionImageMatcher:
     
     @LogPerformance()
     def _compare_images(self, template_image: Union[str, np.ndarray, Image.Image], 
-                       current_frame: Union[str, np.ndarray, Image.Image]) -> float:
+                       current_frame: Union[str, np.ndarray, Image.Image] , 
+                       template_image_id) -> float:
         """
         比较模板图像和当前帧的相似度
         
@@ -190,7 +219,11 @@ class InceptionImageMatcher:
         """
         try:
             # 提取特征向量
-            template_features = self.extract_features(template_image)
+            # template_features = self.extract_features(template_image)
+            
+            # 根据图片id获取特征
+            template_features = self.extract_features_by_template_id(template_image_id)
+            
             frame_features = self.extract_features(current_frame)
             
             if template_features is None:
