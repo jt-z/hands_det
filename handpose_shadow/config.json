@@ -1,4 +1,8 @@
-{
+{ 
+  "VIDEO_SOURCE_MODE": "RTSP",
+  "RTSP_URL_1": "rtsp://127.0.0.1:8554/mystream", 
+  "RTSP_URL_2": "rtsp://127.0.0.1:8554/mystream",
+
   "CONSECUTIVE_FRAMES": 3,
   "DEFAULT_GROUP": "group1",
   "TEMPLATE_THRESHOLD": 83,
