@@ -66,6 +66,15 @@ for group_name, templates in TEMPLATE_GROUPS.items():
             template['file'] = os.path.join(TEMPLATES_DIR, template['file'])
 # --- 新增结束 ---
 
+# ==================================================================
+# == 在这里添加新的配置变量 ==
+# ==================================================================
+# 从 config.json 加载视频源设置，如果键不存在则提供默认值
+# 默认模式为 'LOCAL' (本地摄像头)，这样更安全
+VIDEO_SOURCE_MODE = config.get('VIDEO_SOURCE_MODE', 'LOCAL')
+RTSP_URL_1 = config.get('RTSP_URL_1', '') # 默认空字符串
+RTSP_URL_2 = config.get('RTSP_URL_2', '') # 默认空字符串
+
 # ------ 加载 config.json 结束 -----
 
 
