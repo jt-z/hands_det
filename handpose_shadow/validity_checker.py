@@ -16,8 +16,8 @@ class SoftwareValidityChecker:
     
     def __init__(self, start_date=None, end_date=None):
         # 默认有效期范围，也可以自定义
-        self.start_date = start_date or datetime.date(2025, 9, 1)
-        self.end_date = end_date or datetime.date(2025, 9, 7)
+        self.start_date = start_date or datetime.date(2025, 10, 21)
+        self.end_date = end_date or datetime.date(2025, 11, 6)
         
     def check_system_requirements(self) -> Tuple[bool, str]:
         """检查系统基本要求"""
